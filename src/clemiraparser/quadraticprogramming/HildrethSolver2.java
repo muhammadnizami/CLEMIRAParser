@@ -11,7 +11,8 @@ import org.apache.commons.math3.linear.ArrayRealVector;
 import org.apache.commons.math3.linear.RealVector;
 
 /**
- * the Optimization for HildrethSolver
+ * the Optimization for HildrethSolver, with the precalculation of dot products 
+ * of A's row vectors
  * @author nizami
  */
 public class HildrethSolver2 extends HildrethSolver {
@@ -23,6 +24,7 @@ public class HildrethSolver2 extends HildrethSolver {
      * @param b
      * @return x* described in Jamil(2014)
      * */
+    @Override
     public RealVector solve(RealVector x_0, RealVector[] A, double[] b){
         
         if (A.length != b.length)
@@ -51,8 +53,8 @@ public class HildrethSolver2 extends HildrethSolver {
             
         for (int k=0;k<maxIter;k++){
             int i_k=k%b.length;
-            double c = min(z[i_k],alpha*(-b[i_k]+Adotx0[i_k]+d.dotProduct(AATranspose[i_k]))/Anorms[i_k]);
-            d.addToEntry(i_k, -c);
+            double c = min(z[i_k],alpha*(b[i_k]-Adotx0[i_k]-d.dotProduct(AATranspose[i_k]))/Anorms[i_k]);
+            d.addToEntry(i_k, c);
             for (int i=0;i<z.length;i++){
                 if (i==i_k)
                     z[i]-=c;
