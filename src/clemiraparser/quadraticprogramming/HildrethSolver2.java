@@ -55,10 +55,7 @@ public class HildrethSolver2 extends HildrethSolver {
             int i_k=k%b.length;
             double c = min(z[i_k],alpha*(b[i_k]-Adotx0[i_k]-d.dotProduct(AATranspose[i_k]))/Anorms[i_k]);
             d.addToEntry(i_k, c);
-            for (int i=0;i<z.length;i++){
-                if (i==i_k)
-                    z[i]-=c;
-            }
+            z[i_k]-=c;
             
         }
         
