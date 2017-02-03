@@ -14,6 +14,10 @@ import clemiraparser.miraoptimizationproblem.McDonaldHammingLoss;
 import clemiraparser.miraoptimizationproblem.Chooser;
 import clemiraparser.dictionary.Dictionary;
 import clemiraparser.dictionary.SerializableDictionary;
+import clemiraparser.miraoptimizationproblem.EdgeFactorizedLoss;
+import clemiraparser.miraoptimizationproblem.KBestLWorstChooser;
+import clemiraparser.miraoptimizationproblem.KLossMarkedUpBestChooser;
+import clemiraparser.miraoptimizationproblem.LWorstChooser;
 import com.google.common.collect.ImmutableMap;
 import edu.cmu.cs.ark.cle.Arborescence;
 import edu.cmu.cs.ark.cle.ChuLiuEdmonds;
@@ -52,7 +56,7 @@ public class CLEMIRAParser implements java.io.Serializable{
     public static String outfile = "out.conllu";
     public static String goldfile = null;
     public static int trainK = 1;
-    public static int trainL = 0;
+    public static int trainL = 1;
     public static int testK = 1;
     
     public static LossFunction lossFunction() throws Exception{
@@ -65,6 +69,12 @@ public class CLEMIRAParser implements java.io.Serializable{
     public static Chooser chooser() throws Exception{
         if (chooser.equals("kbest")){
             return new KBestChooser(trainK);
+        }else if (chooser.equals("lworst")){
+            return new LWorstChooser(trainL);
+        }else if (chooser.equals("kbestlworst")){
+            return new KBestLWorstChooser(trainK,trainL);
+        }else if (chooser.equals("klossmarkedupbest")){
+            return new KLossMarkedUpBestChooser(trainK, (EdgeFactorizedLoss) lossFunction());
         }else{
             throw new Exception("unknown chooser " + chooser);
         }
@@ -315,6 +325,9 @@ public class CLEMIRAParser implements java.io.Serializable{
 	    if(pair[0].equals("loss-function")) {
 		lossFunction = pair[1];
 	    }
+            if(pair[0].equals("chooser")){
+                chooser = pair[1];
+            }
 	}
 	
 	System.out.println("------\nFLAGS\n------");

@@ -19,22 +19,35 @@ import java.util.List;
  *
  * @author nizami
  */
-public class KBestChooser implements Chooser{
+public class LWorstChooser implements Chooser{
 
-    int k;
+    int l;
     
-    public KBestChooser(int k){
-        this.k = k;
+    public LWorstChooser(int l){
+        this.l = l;
+    }
+    
+    public static double [][] negate(double[][] m){
+        double [][] r = new double[m.length][];
+        for (int i=0;i<m.length;i++){
+            r[i]=new double[m[i].length];
+            for (int j=0;j<m[i].length;j++){
+                r[i][j]=-m[i][j];
+            }
+        }
+        
+        return r;        
     }
     
     @Override
     public List<int[]> choosePredictions(DependencyInstanceFeatureVectors instance, int [] dep, Parameter parameter) {
         double [][] scoreTable = parameter.getScoreTable(instance);
-        DenseWeightedGraph g = DenseWeightedGraph.from(scoreTable);
+        double [][] negScoreTable = negate(scoreTable);
+        DenseWeightedGraph g = DenseWeightedGraph.from(negScoreTable);
         
-        List<Weighted<Arborescence<Integer>>> kBestArborescences = KBestArborescences.getKBestArborescences(g, 0, k);
+        List<Weighted<Arborescence<Integer>>> kBestArborescences = KBestArborescences.getKBestArborescences(g, 0, l);
         
-        List<int[]> retval = new ArrayList<>(k);
+        List<int[]> retval = new ArrayList<>(l);
         for (Weighted<Arborescence<Integer>> arborescence : kBestArborescences){
             int [] deppred = new int[instance.getN()+1];
             ImmutableMap<Integer,Integer> parents = arborescence.val.parents;
@@ -47,3 +60,4 @@ public class KBestChooser implements Chooser{
     }
     
 }
+

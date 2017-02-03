@@ -14,5 +14,5 @@ import java.util.List;
  * @author nizami
  */
 public interface Chooser {
-    public List<int[]> choosePredictions(DependencyInstanceFeatureVectors instance, Parameter p);
+    public List<int[]> choosePredictions(DependencyInstanceFeatureVectors instance, int [] dep, Parameter p);
 }

@@ -19,17 +19,27 @@ import java.util.List;
  *
  * @author nizami
  */
-public class KBestChooser implements Chooser{
+public class KLossMarkedUpBestChooser implements Chooser{
 
     int k;
+    EdgeFactorizedLoss lossFunction;
     
-    public KBestChooser(int k){
+    public KLossMarkedUpBestChooser(int k, EdgeFactorizedLoss lossFunction){
         this.k = k;
+        this.lossFunction=lossFunction;
     }
     
     @Override
     public List<int[]> choosePredictions(DependencyInstanceFeatureVectors instance, int [] dep, Parameter parameter) {
         double [][] scoreTable = parameter.getScoreTable(instance);
+        
+        //marking up the scores
+        for (int i=0;i<=instance.getN();i++){
+            for (int j=1;j<=instance.getN();j++){
+                scoreTable[i][j] += lossFunction.loss(dep, i, j);
+            }
+        }        
+        
         DenseWeightedGraph g = DenseWeightedGraph.from(scoreTable);
         
         List<Weighted<Arborescence<Integer>>> kBestArborescences = KBestArborescences.getKBestArborescences(g, 0, k);
@@ -45,5 +55,5 @@ public class KBestChooser implements Chooser{
         }
         return retval;
     }
-    
+
 }

@@ -45,7 +45,7 @@ public class Parameter implements java.io.Serializable{
     }
     
     public RealVector nextWeightVector(ConstraintType constraintType, LossFunction lossFunction, Chooser chooser, DependencyInstanceFeatureVectors instance, int [] dep){
-        List<int[]> chosenPreds = chooser.choosePredictions(instance, this);
+        List<int[]> chosenPreds = chooser.choosePredictions(instance, dep, this);
         
         RealVector [] A = constraintType.getA(lossFunction, instance, dep, chosenPreds);
         double [] b = constraintType.getb(lossFunction, dep, chosenPreds);
