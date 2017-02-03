@@ -18,6 +18,8 @@ import clemiraparser.miraoptimizationproblem.EdgeFactorizedLoss;
 import clemiraparser.miraoptimizationproblem.KBestLWorstChooser;
 import clemiraparser.miraoptimizationproblem.KLossMarkedUpBestChooser;
 import clemiraparser.miraoptimizationproblem.LWorstChooser;
+import clemiraparser.miraoptimizationproblem.ModifiedConstraintType;
+import clemiraparser.miraoptimizationproblem.RootPreferredLossFunction;
 import com.google.common.collect.ImmutableMap;
 import edu.cmu.cs.ark.cle.Arborescence;
 import edu.cmu.cs.ark.cle.ChuLiuEdmonds;
@@ -58,10 +60,14 @@ public class CLEMIRAParser implements java.io.Serializable{
     public static int trainK = 1;
     public static int trainL = 1;
     public static int testK = 1;
+    public static double trainAlpha = 3.0d;
+    public static double trainLambda = 2.0d;
     
     public static LossFunction lossFunction() throws Exception{
         if (lossFunction.equals("mcdonaldhamming")){
             return new McDonaldHammingLoss();
+        }else if (lossFunction.equals("rootpreferred")){
+            return new RootPreferredLossFunction(trainLambda);
         }else{
             throw new Exception("unknown loss function " + lossFunction);
         }
@@ -82,7 +88,9 @@ public class CLEMIRAParser implements java.io.Serializable{
     public static ConstraintType constraint() throws Exception{
         if (constraint.equals("original")){
             return new MIRAConstraintType();
-        }else{
+        }else if (constraint.equals("modified")){
+            return new ModifiedConstraintType(trainAlpha);
+        }else {
             throw new Exception("unknown constraint " + constraint);
         }
     }
@@ -328,6 +336,15 @@ public class CLEMIRAParser implements java.io.Serializable{
             if(pair[0].equals("chooser")){
                 chooser = pair[1];
             }
+            if(pair[0].equals("constraint")){
+                constraint = pair[1];
+            }
+            if(pair[0].equals("training-alpha")){
+                trainAlpha = Double.parseDouble(pair[1]);
+            }
+            if(pair[0].equals("training-lambda")){
+                trainLambda = Double.parseDouble(pair[1]);
+            }
 	}
 	
 	System.out.println("------\nFLAGS\n------");
@@ -345,6 +362,8 @@ public class CLEMIRAParser implements java.io.Serializable{
 	System.out.println("training-iterations: " + numIters);
 	System.out.println("training-k: " + trainK);
 	System.out.println("training-l: " + trainL);
+        System.out.println("training-alpha: " + trainAlpha);
+        System.out.println("training-lambda: " + trainLambda);
 	System.out.println("------\n");
     }
 }
