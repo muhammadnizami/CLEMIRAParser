@@ -176,11 +176,11 @@ public class CLEMIRAParser implements java.io.Serializable{
                     unlabeledCompleteCorrect = false;
                     labeledCompleteCorrect = false;
                 }
-                if (unlabeledCompleteCorrect)
-                    unlabeledCompleteCorrects++;
-                if (labeledCompleteCorrect)
-                    labeledCompleteCorrects++;
             }
+            if (unlabeledCompleteCorrect)
+                unlabeledCompleteCorrects++;
+            if (labeledCompleteCorrect)
+                labeledCompleteCorrects++;
         }
         double UAS = ((double)unlabeledAttachmentCorrects)/(unlabeledAttachmentIncorrects+unlabeledAttachmentCorrects);
         double unlabeledCompleteCorrect = ((double)unlabeledCompleteCorrects)/out.size();
