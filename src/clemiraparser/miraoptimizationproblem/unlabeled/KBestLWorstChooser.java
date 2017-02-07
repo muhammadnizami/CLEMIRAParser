@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package clemiraparser.miraoptimizationproblem;
+package clemiraparser.miraoptimizationproblem.unlabeled;
 
 import clemiraparser.DependencyInstanceFeatureVectors;
 import clemiraparser.Parameter;

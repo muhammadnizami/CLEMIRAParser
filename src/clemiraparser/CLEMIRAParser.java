@@ -5,25 +5,6 @@
  */
 package clemiraparser;
 
-import clemiraparser.util.MySparseVector;
-import clemiraparser.miraoptimizationproblem.ConstraintType;
-import clemiraparser.miraoptimizationproblem.LossFunction;
-import clemiraparser.miraoptimizationproblem.KBestChooser;
-import clemiraparser.miraoptimizationproblem.MIRAConstraintType;
-import clemiraparser.miraoptimizationproblem.McDonaldHammingLoss;
-import clemiraparser.miraoptimizationproblem.Chooser;
-import clemiraparser.dictionary.UnlabeledDependencyDictionary;
-import clemiraparser.miraoptimizationproblem.EdgeFactorizedLoss;
-import clemiraparser.miraoptimizationproblem.KBestLWorstChooser;
-import clemiraparser.miraoptimizationproblem.KLossMarkedUpBestChooser;
-import clemiraparser.miraoptimizationproblem.LWorstChooser;
-import clemiraparser.miraoptimizationproblem.ModifiedConstraintType;
-import clemiraparser.miraoptimizationproblem.RootPreferredLossFunction;
-import com.google.common.collect.ImmutableMap;
-import edu.cmu.cs.ark.cle.Arborescence;
-import edu.cmu.cs.ark.cle.ChuLiuEdmonds;
-import edu.cmu.cs.ark.cle.graph.DenseWeightedGraph;
-import edu.cmu.cs.ark.cle.util.Weighted;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -32,16 +13,14 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import org.apache.commons.math3.exception.DimensionMismatchException;
-import org.apache.commons.math3.linear.RealVector;
 
 /**
  *
  * @author nizami
  */
-public class CLEMIRAParser implements java.io.Serializable{
+public abstract class CLEMIRAParser implements java.io.Serializable{
     public static final long serialVersionUID = 0L;
 
     public static String trainfile = null;
@@ -53,6 +32,7 @@ public class CLEMIRAParser implements java.io.Serializable{
     public static String lossFunction = "mcdonaldhamming";
     public static String chooser = "kbest";
     public static String constraint = "original";
+    public static String stages = "two";
     public static int numIters = 10;
     public static String outfile = "out.conllu";
     public static String goldfile = null;
@@ -62,80 +42,19 @@ public class CLEMIRAParser implements java.io.Serializable{
     public static double trainAlpha = 3.0d;
     public static double trainLambda = 2.0d;
     
-    public static LossFunction lossFunction() throws Exception{
-        if (lossFunction.equals("mcdonaldhamming")){
-            return new McDonaldHammingLoss();
-        }else if (lossFunction.equals("rootpreferred")){
-            return new RootPreferredLossFunction(trainLambda);
+    public static CLEMIRAParser parser(){
+        if (stages.equals("two")){
+            return new TwoStageParser();
+        }else if (stages.equals("one")){
+            return new OneStageParser();
         }else{
-            throw new Exception("unknown loss function " + lossFunction);
+            throw new IllegalArgumentException("Unknown stage " + stages);
         }
     }
-    public static Chooser chooser() throws Exception{
-        if (chooser.equals("kbest")){
-            return new KBestChooser(trainK);
-        }else if (chooser.equals("lworst")){
-            return new LWorstChooser(trainL);
-        }else if (chooser.equals("kbestlworst")){
-            return new KBestLWorstChooser(trainK,trainL);
-        }else if (chooser.equals("klossmarkedupbest")){
-            return new KLossMarkedUpBestChooser(trainK, (EdgeFactorizedLoss) lossFunction());
-        }else{
-            throw new Exception("unknown chooser " + chooser);
-        }
-    }
-    public static ConstraintType constraint() throws Exception{
-        if (constraint.equals("original")){
-            return new MIRAConstraintType();
-        }else if (constraint.equals("modified")){
-            return new ModifiedConstraintType(trainAlpha);
-        }else {
-            throw new Exception("unknown constraint " + constraint);
-        }
-    }
-    
-    UnlabeledDependencyDictionary dictionary;
-    Parameter parameter;
-    
-    public void train(UnlabeledDependencyDictionary dictionary,
-            List<DependencyInstance> instances,
-            LossFunction lossFunction,
-            Chooser chooser,
-            ConstraintType constraint,
-            int numIter){
-        this.dictionary = dictionary;
-        parameter = new Parameter(dictionary.getSize());
-        int T = instances.size();
-        RealVector v = new MySparseVector(dictionary.getSize());
         
-        for (int i=0;i<numIter;i++){
-            
-            System.out.println("========================\n" +
-                "Iteration: "+i+"\n" +
-                "========================");
-            System.out.print("Processed:");
-            int t=1;
-            long start = System.currentTimeMillis();            
-            for (DependencyInstance instance : instances){
-                DependencyInstanceFeatureVectors instancefv = dictionary.featureVectors(instance);
-                parameter.update(constraint, lossFunction, chooser, instancefv, instance.getDep());
-                v = v.add(parameter.getWeightVector());
-                
-                t++;
-                if ((t)%500==0){
-                    System.out.println("\t"+(t));
-                }
-            }
-            if (T%500!=0){
-                System.out.println("\t"+T);
-            }
-            long end = System.currentTimeMillis();
-            System.out.println("Training iter took: "+(end-start));
-        }
-        
-        RealVector w = v.mapDivide(numIter*T);
-        parameter.setWeightVector(w);
-    }
+    abstract public void train(List<DependencyInstance> instances) throws Exception;
+    abstract public void optimizeForSerialization();
+    
     public List<DependencyInstance> test(List<DependencyInstance> instances){
         List<DependencyInstance> preds = new ArrayList<>(instances.size());
         for (DependencyInstance instance : instances){
@@ -203,21 +122,7 @@ public class CLEMIRAParser implements java.io.Serializable{
         System.out.println("unlabeled complete correct: " + unlabeledCompleteCorrect);
         System.out.println("labeled complete correct: " + labeledCompleteCorrect);
     }
-    public DependencyInstance parse(DependencyInstance instance){
-        DependencyInstanceFeatureVectors instancefv = dictionary.featureVectors(instance);
-        double[][] scoreTable = parameter.getScoreTable(instancefv);
-        DenseWeightedGraph g = DenseWeightedGraph.from(scoreTable);
-        Weighted<Arborescence<Integer>> maxArborescence = ChuLiuEdmonds.getMaxArborescence(g, 0);
-        
-        int [] deppred = new int[instance.getLength()+1];
-        ImmutableMap<Integer,Integer> parents = maxArborescence.val.parents;
-        for (int i=1;i<=instance.getLength();i++){
-            deppred[i]=parents.get(i);
-        }
-        DependencyInstance retval = new DependencyInstance(instance.getLength(), instance.getWord(), instance.getPos(), deppred);
-        
-        return retval;
-    }
+    abstract public DependencyInstance parse(DependencyInstance instance);
 
     /**
      * @param args the command line arguments
@@ -229,26 +134,18 @@ public class CLEMIRAParser implements java.io.Serializable{
         
         if (train){
             System.out.println("===========\n== TRAIN ==\n===========");
-            long start = System.currentTimeMillis();
-            UnlabeledDependencyDictionary dictionary = new UnlabeledDependencyDictionary();
-            dictionary.addFromFile(trainfile);
-            
-            long end = System.currentTimeMillis();
-            System.out.println("creating dictionary took: " + (end-start));
-            System.out.println("Num Feats: " + dictionary.getSize());
             
             System.out.print("reading train file...");
             DependencyFileReader dependencyFileReader = new DependencyFileReader(new File(trainfile));
             List<DependencyInstance> instances = dependencyFileReader.loadAll();
             System.out.println("done");
-                        
-            System.out.println("training...");
-            CLEMIRAParser parser = new CLEMIRAParser();
-            parser.train(dictionary, instances, lossFunction(), chooser(), constraint(), numIters);
-            System.out.println("done");
+            
+            CLEMIRAParser parser = parser();
+            parser.train(instances);
+            
             
             System.out.print("saving the model...");
-            parser.parameter.optimizeForSerialization();
+            parser.optimizeForSerialization();
             ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(modelName));
             out.writeObject(parser);
             out.close();
@@ -346,6 +243,9 @@ public class CLEMIRAParser implements java.io.Serializable{
             if(pair[0].equals("training-lambda")){
                 trainLambda = Double.parseDouble(pair[1]);
             }
+            if(pair[0].equals("stages")){
+                stages = pair[1];
+            }
 	}
 	
 	System.out.println("------\nFLAGS\n------");
@@ -365,6 +265,7 @@ public class CLEMIRAParser implements java.io.Serializable{
 	System.out.println("training-l: " + trainL);
         System.out.println("training-alpha: " + trainAlpha);
         System.out.println("training-lambda: " + trainLambda);
+        System.out.println("stages: " + stages);
 	System.out.println("------\n");
     }
 }

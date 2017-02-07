@@ -10,6 +10,7 @@ import clemiraparser.DependencyInstance;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -37,6 +38,12 @@ public abstract class Dictionary{
         if (!featureStringMap.containsKey(featureString)){
             featureStringMap.put(featureString, size);
             size++;
+        }
+    }
+    
+    public void add(List<DependencyInstance> instances){
+        for (DependencyInstance instance :instances){
+            add(instance);
         }
     }
     
