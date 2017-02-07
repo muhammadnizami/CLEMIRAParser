@@ -1,7 +1,7 @@
 
 import clemiraparser.DependencyFileReader;
 import clemiraparser.DependencyInstance;
-import clemiraparser.dictionary.Dictionary;
+import clemiraparser.dictionary.UnlabeledDependencyDictionary;
 import java.io.File;
 import java.io.FileNotFoundException;
 import org.junit.Test;
@@ -19,7 +19,8 @@ import org.junit.Test;
 public class DictionaryTest {
     @Test
     public void testCreate() throws FileNotFoundException{
-        Dictionary d = Dictionary.createDictionary("id-ud-train.conllu");
+        UnlabeledDependencyDictionary d = new UnlabeledDependencyDictionary();
+        d.addFromFile("id-ud-train.conllu");
         System.out.println("size: "+d.getSize());
         
         DependencyFileReader reader = new DependencyFileReader(new File("id-ud-train.conllu"));

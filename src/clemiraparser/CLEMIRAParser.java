@@ -12,8 +12,7 @@ import clemiraparser.miraoptimizationproblem.KBestChooser;
 import clemiraparser.miraoptimizationproblem.MIRAConstraintType;
 import clemiraparser.miraoptimizationproblem.McDonaldHammingLoss;
 import clemiraparser.miraoptimizationproblem.Chooser;
-import clemiraparser.dictionary.Dictionary;
-import clemiraparser.dictionary.SerializableDictionary;
+import clemiraparser.dictionary.UnlabeledDependencyDictionary;
 import clemiraparser.miraoptimizationproblem.EdgeFactorizedLoss;
 import clemiraparser.miraoptimizationproblem.KBestLWorstChooser;
 import clemiraparser.miraoptimizationproblem.KLossMarkedUpBestChooser;
@@ -95,10 +94,10 @@ public class CLEMIRAParser implements java.io.Serializable{
         }
     }
     
-    Dictionary dictionary;
+    UnlabeledDependencyDictionary dictionary;
     Parameter parameter;
     
-    public void train(Dictionary dictionary,
+    public void train(UnlabeledDependencyDictionary dictionary,
             List<DependencyInstance> instances,
             LossFunction lossFunction,
             Chooser chooser,
@@ -231,7 +230,9 @@ public class CLEMIRAParser implements java.io.Serializable{
         if (train){
             System.out.println("===========\n== TRAIN ==\n===========");
             long start = System.currentTimeMillis();
-            Dictionary dictionary = SerializableDictionary.createDictionary(trainfile);
+            UnlabeledDependencyDictionary dictionary = new UnlabeledDependencyDictionary();
+            dictionary.addFromFile(trainfile);
+            
             long end = System.currentTimeMillis();
             System.out.println("creating dictionary took: " + (end-start));
             System.out.println("Num Feats: " + dictionary.getSize());

@@ -5,10 +5,7 @@
  */
 package clemiraparser.dictionary;
 
-import clemiraparser.DependencyFileReader;
 import clemiraparser.DependencyInstance;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -19,9 +16,14 @@ import java.util.List;
  *
  * @author nizami
  */
-public class SerializableDictionary extends Dictionary implements java.io.Serializable {
+public abstract class SerializableDictionary extends Dictionary implements java.io.Serializable {
     public static final long serialVersionUID = 0L;
-    List<DependencyInstance> buildInstance = new LinkedList<>();
+    List<DependencyInstance> buildInstance;
+    
+    public SerializableDictionary(){
+        super();
+        this.buildInstance = new LinkedList<>();
+    }
     
     @Override
     protected void add(DependencyInstance instance){
@@ -39,18 +41,4 @@ public class SerializableDictionary extends Dictionary implements java.io.Serial
             add(instance);
         }
     }
-    
-    public static Dictionary createDictionary(String filePath) throws FileNotFoundException{
-        File f = new File(filePath);
-        DependencyFileReader dependencyFileReader = new DependencyFileReader(f);
-        Dictionary dictionary = new SerializableDictionary();
-        
-        while (dependencyFileReader.hasNextInstance()){
-            DependencyInstance dependencyInstance = dependencyFileReader.nextInstance();
-            dictionary.add(dependencyInstance);
-        }
-        
-        return dictionary;
-    }
-
 }
