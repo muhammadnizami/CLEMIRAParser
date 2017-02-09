@@ -10,7 +10,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * the feature vector copied and slightly modified from MSTParser
+ * the feature vector copied and slightly modified (to conform this project's data structure) from MSTParser
  * @author nizami
  */
 public class MSTParserUnlabeledDependencyDictionary extends UnlabeledDependencyDictionary{
@@ -23,8 +23,14 @@ public class MSTParserUnlabeledDependencyDictionary extends UnlabeledDependencyD
         
         String [] pos = instance.getPos();
         String [] toks = instance.getWord();
+        String[] posA = new String[pos.length];
+	for(int i = 0; i < pos.length; i++) {
+	    posA[i] = pos[i].substring(0,1);
+	}
+        
         List<String> ret = new LinkedList<>();
         
+	    
 	String att = "";
 	if(attR)
 	    att = "RA";
@@ -52,13 +58,19 @@ public class MSTParserUnlabeledDependencyDictionary extends UnlabeledDependencyD
 	String pRight = large < pos.length-1 ? pos[large+1] : "END";
 	String pLeftRight = small < large-1 ? pos[small+1] : "MID";
 	String pRightLeft = large > small+1 ? pos[large-1] : "MID";
+	String pLeftA = small > 0 ? posA[small-1] : "STR";
+	String pRightA = large < pos.length-1 ? posA[large+1] : "END";
+	String pLeftRightA = small < large-1 ? posA[small+1] : "MID";
+	String pRightLeftA = large > small+1 ? posA[large-1] : "MID";
 		
-        
 	// feature posR posMid posL
 	for(int i = small+1; i < large; i++) {
 	    String allPos = pos[small]+" "+pos[i]+" "+pos[large];
+	    String allPosA = posA[small]+" "+posA[i]+" "+posA[large];
 	    ret.add("PC="+allPos+attDist);
 	    ret.add("1PC="+allPos);
+	    ret.add("XPC="+allPosA+attDist);
+	    ret.add("X1PC="+allPosA);
 	}
 
 	// feature posL-1 posL posR posR+1
@@ -73,6 +85,18 @@ public class MSTParserUnlabeledDependencyDictionary extends UnlabeledDependencyD
 	ret.add("1PT2="+pLeft+" "+pos[small]+" "+pos[large]);
 	ret.add("1PT3="+pLeft+" "+pos[large]+" "+pRight);
 	ret.add("1PT4="+pLeft+" "+pos[small]+" "+pRight);
+		
+	ret.add("XPT="+pLeftA+" "+posA[small]+" "+posA[large]+" "+pRightA+attDist);
+	ret.add("XPT1="+posA[small]+" "+posA[large]+" " +pRightA+attDist);
+	ret.add("XPT2="+pLeftA+" "+posA[small]+" "+posA[large]+attDist);
+	ret.add("XPT3="+pLeftA+" "+posA[large]+" "+pRightA+attDist);
+	ret.add("XPT4="+pLeftA+" "+posA[small]+" "+pRightA+attDist);
+		
+	ret.add("X1PT="+pLeftA+" "+posA[small]+" "+posA[large]+" "+pRightA);
+	ret.add("X1PT1="+posA[small]+" "+posA[large]+" " +pRightA);
+	ret.add("X1PT2="+pLeftA+" "+posA[small]+" "+posA[large]);
+	ret.add("X1PT3="+pLeftA+" "+posA[large]+" "+pRightA);
+	ret.add("X1PT4="+pLeftA+" "+posA[small]+" "+pRightA);
 		
 	// feature posL posL+1 posR-1 posR
 	ret.add("APT="+pos[small]+" "+pLeftRight+" "
@@ -89,12 +113,31 @@ public class MSTParserUnlabeledDependencyDictionary extends UnlabeledDependencyD
 	ret.add("1APT3="+pLeftRight+" "+pRightLeft+" "+pos[large]);
 	ret.add("1APT4="+pos[small]+" "+pLeftRight+" "+pRightLeft);
 		
+	ret.add("XAPT="+posA[small]+" "+pLeftRightA+" "
+		 +pRightLeftA+" "+posA[large]+attDist);
+	ret.add("XAPT1="+posA[small]+" "+pRightLeftA+" "+posA[large]+attDist);
+	ret.add("XAPT2="+posA[small]+" "+pLeftRightA+" "+posA[large]+attDist);
+	ret.add("XAPT3="+pLeftRightA+" "+pRightLeftA+" "+posA[large]+attDist);
+	ret.add("XAPT4="+posA[small]+" "+pLeftRightA+" "+pRightLeftA+attDist);
+
+	ret.add("X1APT="+posA[small]+" "+pLeftRightA+" "
+		 +pRightLeftA+" "+posA[large]);
+	ret.add("X1APT1="+posA[small]+" "+pRightLeftA+" "+posA[large]);
+	ret.add("X1APT2="+posA[small]+" "+pLeftRightA+" "+posA[large]);
+	ret.add("X1APT3="+pLeftRightA+" "+pRightLeftA+" "+posA[large]);
+	ret.add("X1APT4="+posA[small]+" "+pLeftRightA+" "+pRightLeftA);
+		
 	// feature posL-1 posL posR-1 posR
 	// feature posL posL+1 posR posR+1
 	ret.add("BPT="+pLeft+" "+pos[small]+" "+pRightLeft+" "+pos[large]+attDist);
 	ret.add("1BPT="+pLeft+" "+pos[small]+" "+pRightLeft+" "+pos[large]);
 	ret.add("CPT="+pos[small]+" "+pLeftRight+" "+pos[large]+" "+pRight+attDist);
 	ret.add("1CPT="+pos[small]+" "+pLeftRight+" "+pos[large]+" "+pRight);
+		
+	ret.add("XBPT="+pLeftA+" "+posA[small]+" "+pRightLeftA+" "+posA[large]+attDist);
+	ret.add("X1BPT="+pLeftA+" "+posA[small]+" "+pRightLeftA+" "+posA[large]);
+	ret.add("XCPT="+posA[small]+" "+pLeftRightA+" "+posA[large]+" "+pRightA+attDist);
+	ret.add("X1CPT="+posA[small]+" "+pLeftRightA+" "+posA[large]+" "+pRightA);
 
 	String head = attR ? toks[small] : toks[large];
 	String headP = attR ? pos[small] : pos[large];
