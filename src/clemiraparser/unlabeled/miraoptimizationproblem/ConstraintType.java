@@ -3,9 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package clemiraparser.miraoptimizationproblem.unlabeled;
+package clemiraparser.unlabeled.miraoptimizationproblem;
 
-import clemiraparser.DependencyInstanceFeatureVectors;
+import clemiraparser.unlabeled.DependencyInstanceFeatureVectors;
 import java.util.List;
 import org.apache.commons.math3.linear.RealMatrix;
 import org.apache.commons.math3.linear.RealVector;

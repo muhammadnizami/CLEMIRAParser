@@ -6,7 +6,7 @@
 package clemiraparser.dictionary;
 
 import clemiraparser.DependencyInstance;
-import clemiraparser.DependencyInstanceFeatureVectors;
+import clemiraparser.unlabeled.DependencyInstanceFeatureVectors;
 import clemiraparser.util.MySparseVector;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -78,15 +78,7 @@ public class UnlabeledDependencyDictionary extends SerializableDictionary{
     public RealVector featureVector(DependencyInstance instance, int pid, int cid){
         String featureStrings[] = featureString(instance, pid, cid);
         
-        MySparseVector r = new MySparseVector(getSize());
-        RealVector retval = r;
-        
-        for (String s : featureStrings){
-            if (featureStringMap.containsKey(s)){
-                int index = featureStringMap.get(s);
-                retval.setEntry(index,1.0d);
-            }
-        }
+        RealVector retval = featureVector(featureStrings);
         return retval;
     }
     
@@ -114,5 +106,10 @@ public class UnlabeledDependencyDictionary extends SerializableDictionary{
             }
         //}
         return r.toArray(new String[r.size()]);
+    }
+
+    @Override
+    protected void initDictionary() {
+        //do nothing
     }
 }

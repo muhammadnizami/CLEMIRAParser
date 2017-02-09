@@ -5,6 +5,7 @@
  */
 package clemiraparser;
 
+import clemiraparser.unlabeled.UnlabeledParser;
 import java.util.List;
 
 /**
@@ -17,13 +18,15 @@ public class TwoStageParser extends CLEMIRAParser{
 
     @Override
     public void train(List<DependencyInstance> instances) throws Exception {
+        System.out.println("===unlabeled parser===");
         unlabeledParser = new UnlabeledParser();
         unlabeledParser.train(instances);
     }
 
     @Override
     public DependencyInstance parse(DependencyInstance instance) {
-        return unlabeledParser.parse(instance);
+        DependencyInstance unlabeledDep = unlabeledParser.parse(instance);
+        return unlabeledDep;
     }
 
     @Override

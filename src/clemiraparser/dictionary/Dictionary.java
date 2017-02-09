@@ -7,11 +7,13 @@ package clemiraparser.dictionary;
 
 import clemiraparser.DependencyFileReader;
 import clemiraparser.DependencyInstance;
+import clemiraparser.util.MySparseVector;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.math3.linear.RealVector;
 
 /**
  *
@@ -26,6 +28,8 @@ public abstract class Dictionary{
         size=0;
         featureStringMap = new HashMap<>();
     }
+    
+    abstract protected void initDictionary();
     
     protected void add(DependencyInstance dependencyInstance){
         String [] featureStrings = featureString(dependencyInstance);
@@ -63,5 +67,16 @@ public abstract class Dictionary{
     }
     
     protected abstract String[] featureString(DependencyInstance instance);
+    
+    RealVector featureVector(String [] featureStrings){
+        RealVector retval = new MySparseVector(getSize());
+        for (String s : featureStrings){
+            if (featureStringMap.containsKey(s)){
+                int index = featureStringMap.get(s);
+                retval.setEntry(index,1.0d);
+            }
+        }
+        return retval;
+    }
 
 }

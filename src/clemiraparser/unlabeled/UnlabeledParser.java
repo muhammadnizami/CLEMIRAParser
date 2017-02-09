@@ -3,22 +3,25 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package clemiraparser;
+package clemiraparser.unlabeled;
 
+import clemiraparser.CLEMIRAParser;
+import clemiraparser.DependencyInstance;
+import clemiraparser.dictionary.MSTParserUnlabeledDependencyDictionary;
 import clemiraparser.util.MySparseVector;
-import clemiraparser.miraoptimizationproblem.unlabeled.ConstraintType;
-import clemiraparser.miraoptimizationproblem.unlabeled.LossFunction;
-import clemiraparser.miraoptimizationproblem.unlabeled.KBestChooser;
-import clemiraparser.miraoptimizationproblem.unlabeled.MIRAConstraintType;
-import clemiraparser.miraoptimizationproblem.unlabeled.McDonaldHammingLoss;
-import clemiraparser.miraoptimizationproblem.unlabeled.Chooser;
+import clemiraparser.unlabeled.miraoptimizationproblem.ConstraintType;
+import clemiraparser.unlabeled.miraoptimizationproblem.LossFunction;
+import clemiraparser.unlabeled.miraoptimizationproblem.KBestChooser;
+import clemiraparser.unlabeled.miraoptimizationproblem.MIRAConstraintType;
+import clemiraparser.unlabeled.miraoptimizationproblem.McDonaldHammingLoss;
+import clemiraparser.unlabeled.miraoptimizationproblem.Chooser;
 import clemiraparser.dictionary.UnlabeledDependencyDictionary;
-import clemiraparser.miraoptimizationproblem.unlabeled.EdgeFactorizedLoss;
-import clemiraparser.miraoptimizationproblem.unlabeled.KBestLWorstChooser;
-import clemiraparser.miraoptimizationproblem.unlabeled.KLossMarkedUpBestChooser;
-import clemiraparser.miraoptimizationproblem.unlabeled.LWorstChooser;
-import clemiraparser.miraoptimizationproblem.unlabeled.ModifiedConstraintType;
-import clemiraparser.miraoptimizationproblem.unlabeled.RootPreferredLossFunction;
+import clemiraparser.unlabeled.miraoptimizationproblem.EdgeFactorizedLoss;
+import clemiraparser.unlabeled.miraoptimizationproblem.KBestLWorstChooser;
+import clemiraparser.unlabeled.miraoptimizationproblem.KLossMarkedUpBestChooser;
+import clemiraparser.unlabeled.miraoptimizationproblem.LWorstChooser;
+import clemiraparser.unlabeled.miraoptimizationproblem.ModifiedConstraintType;
+import clemiraparser.unlabeled.miraoptimizationproblem.RootPreferredLossFunction;
 import com.google.common.collect.ImmutableMap;
 import edu.cmu.cs.ark.cle.Arborescence;
 import edu.cmu.cs.ark.cle.ChuLiuEdmonds;

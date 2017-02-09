@@ -37,6 +37,7 @@ public abstract class SerializableDictionary extends Dictionary implements java.
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException{
         List<DependencyInstance> readObject = (List<DependencyInstance>) in.readObject();
         buildInstance = new LinkedList<>();
+        initDictionary();
         for (DependencyInstance instance : readObject){
             add(instance);
         }

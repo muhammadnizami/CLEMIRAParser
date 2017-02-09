@@ -3,10 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package clemiraparser.miraoptimizationproblem.unlabeled;
+package clemiraparser.unlabeled.miraoptimizationproblem;
 
-import clemiraparser.DependencyInstanceFeatureVectors;
-import clemiraparser.Parameter;
+import clemiraparser.unlabeled.DependencyInstanceFeatureVectors;
+import clemiraparser.unlabeled.Parameter;
 import com.google.common.collect.ImmutableMap;
 import edu.cmu.cs.ark.cle.Arborescence;
 import edu.cmu.cs.ark.cle.KBestArborescences;
@@ -19,32 +19,35 @@ import java.util.List;
  *
  * @author nizami
  */
-public class KLossMarkedUpBestChooser implements Chooser{
+public class LWorstChooser implements Chooser{
 
-    int k;
-    EdgeFactorizedLoss lossFunction;
+    int l;
     
-    public KLossMarkedUpBestChooser(int k, EdgeFactorizedLoss lossFunction){
-        this.k = k;
-        this.lossFunction=lossFunction;
+    public LWorstChooser(int l){
+        this.l = l;
+    }
+    
+    public static double [][] negate(double[][] m){
+        double [][] r = new double[m.length][];
+        for (int i=0;i<m.length;i++){
+            r[i]=new double[m[i].length];
+            for (int j=0;j<m[i].length;j++){
+                r[i][j]=-m[i][j];
+            }
+        }
+        
+        return r;        
     }
     
     @Override
     public List<int[]> choosePredictions(DependencyInstanceFeatureVectors instance, int [] dep, Parameter parameter) {
         double [][] scoreTable = parameter.getScoreTable(instance);
+        double [][] negScoreTable = negate(scoreTable);
+        DenseWeightedGraph g = DenseWeightedGraph.from(negScoreTable);
         
-        //marking up the scores
-        for (int i=0;i<=instance.getN();i++){
-            for (int j=1;j<=instance.getN();j++){
-                scoreTable[i][j] += lossFunction.loss(dep, i, j);
-            }
-        }        
+        List<Weighted<Arborescence<Integer>>> kBestArborescences = KBestArborescences.getKBestArborescences(g, 0, l);
         
-        DenseWeightedGraph g = DenseWeightedGraph.from(scoreTable);
-        
-        List<Weighted<Arborescence<Integer>>> kBestArborescences = KBestArborescences.getKBestArborescences(g, 0, k);
-        
-        List<int[]> retval = new ArrayList<>(k);
+        List<int[]> retval = new ArrayList<>(l);
         for (Weighted<Arborescence<Integer>> arborescence : kBestArborescences){
             int [] deppred = new int[instance.getN()+1];
             ImmutableMap<Integer,Integer> parents = arborescence.val.parents;
@@ -55,5 +58,6 @@ public class KLossMarkedUpBestChooser implements Chooser{
         }
         return retval;
     }
-
+    
 }
+

@@ -3,10 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package clemiraparser.miraoptimizationproblem.unlabeled;
+package clemiraparser.unlabeled.miraoptimizationproblem;
 
-import clemiraparser.DependencyInstanceFeatureVectors;
-import clemiraparser.Parameter;
+import clemiraparser.unlabeled.DependencyInstanceFeatureVectors;
+import clemiraparser.unlabeled.Parameter;
 import com.google.common.collect.ImmutableMap;
 import edu.cmu.cs.ark.cle.Arborescence;
 import edu.cmu.cs.ark.cle.KBestArborescences;

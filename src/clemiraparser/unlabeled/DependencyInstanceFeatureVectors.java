@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package clemiraparser;
+package clemiraparser.unlabeled;
 
 import clemiraparser.util.MySparseVector;
 import org.apache.commons.math3.exception.DimensionMismatchException;

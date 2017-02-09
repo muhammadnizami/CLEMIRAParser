@@ -5,6 +5,7 @@
  */
 package clemiraparser;
 
+import clemiraparser.unlabeled.UnlabeledParser;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -57,10 +58,14 @@ public abstract class CLEMIRAParser implements java.io.Serializable{
     
     public List<DependencyInstance> test(List<DependencyInstance> instances){
         List<DependencyInstance> preds = new ArrayList<>(instances.size());
+        int count = 0;
         for (DependencyInstance instance : instances){
             DependencyInstance pred = parse(instance);
             preds.add(pred);
+            count++;
+            System.out.print(" " + count);
         }
+        System.out.println();
         return preds;
     }
 

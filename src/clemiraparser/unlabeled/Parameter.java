@@ -3,14 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package clemiraparser;
+package clemiraparser.unlabeled;
 
 import clemiraparser.util.MySparseVector;
 import clemiraparser.quadraticprogramming.HildrethSolver2;
 import clemiraparser.quadraticprogramming.HildrethSolver;
-import clemiraparser.miraoptimizationproblem.unlabeled.ConstraintType;
-import clemiraparser.miraoptimizationproblem.unlabeled.LossFunction;
-import clemiraparser.miraoptimizationproblem.unlabeled.Chooser;
+import clemiraparser.unlabeled.miraoptimizationproblem.ConstraintType;
+import clemiraparser.unlabeled.miraoptimizationproblem.LossFunction;
+import clemiraparser.unlabeled.miraoptimizationproblem.Chooser;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
