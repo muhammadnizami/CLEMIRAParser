@@ -15,6 +15,7 @@ import java.util.List;
  */
 public class MSTParserUnlabeledDependencyDictionary extends UnlabeledDependencyDictionary{
     
+    @Override
     public String [] featureString(DependencyInstance instance, int pid, int cid){
            
         int small = cid < pid ? cid : pid;
