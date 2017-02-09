@@ -76,7 +76,7 @@ public class UnlabeledParser extends CLEMIRAParser{
     public void train(List<DependencyInstance> instances) throws Exception {
 
             long start = System.currentTimeMillis();
-            UnlabeledDependencyDictionary dictionary = new UnlabeledDependencyDictionary();
+            UnlabeledDependencyDictionary dictionary = new MSTParserUnlabeledDependencyDictionary();
             dictionary.add(instances);
             
             long end = System.currentTimeMillis();
