@@ -11,6 +11,7 @@ import clemiraparser.quadraticprogramming.HildrethSolver;
 import clemiraparser.unlabeled.miraoptimizationproblem.ConstraintType;
 import clemiraparser.unlabeled.miraoptimizationproblem.LossFunction;
 import clemiraparser.unlabeled.miraoptimizationproblem.Chooser;
+import clemiraparser.util.ListSparseVector;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;

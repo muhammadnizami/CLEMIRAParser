@@ -33,7 +33,7 @@ public abstract class CLEMIRAParser implements java.io.Serializable{
     public static String lossFunction = "mcdonaldhamming";
     public static String chooser = "kbest";
     public static String constraint = "original";
-    public static String stages = "two";
+    public static String stages = "unlabeled";
     public static int numIters = 10;
     public static String outfile = "out.conllu";
     public static String goldfile = null;
@@ -48,6 +48,8 @@ public abstract class CLEMIRAParser implements java.io.Serializable{
             return new TwoStageParser();
         }else if (stages.equals("one")){
             return new OneStageParser();
+        }else if (stages.equals("unlabeled")){
+            return new UnlabeledParser();
         }else{
             throw new IllegalArgumentException("Unknown stage " + stages);
         }

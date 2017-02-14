@@ -27,7 +27,17 @@ import edu.cmu.cs.ark.cle.Arborescence;
 import edu.cmu.cs.ark.cle.ChuLiuEdmonds;
 import edu.cmu.cs.ark.cle.graph.DenseWeightedGraph;
 import edu.cmu.cs.ark.cle.util.Weighted;
+import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.commons.math3.linear.RealVector;
 
 /**
@@ -99,8 +109,18 @@ public class UnlabeledParser extends CLEMIRAParser{
         int T = instances.size();
         RealVector v = new MySparseVector(dictionary.getSize());
         
+        //optimization for feature vectors creation
+        List<DependencyInstanceFeatureVectors> fvs = new ArrayList<>(instances.size());
+        int count = 0;
+        for (DependencyInstance instance : instances){
+            System.out.print(" " + count);count++;
+            DependencyInstanceFeatureVectors featureVector = dictionary.featureVectors(instance);
+            fvs.add(featureVector);
+        }
+              
+        //training iterations
         for (int i=0;i<numIter;i++){
-            
+                     
             System.out.println("========================\n" +
                 "Iteration: "+i+"\n" +
                 "========================");
@@ -108,7 +128,10 @@ public class UnlabeledParser extends CLEMIRAParser{
             int t=1;
             long start = System.currentTimeMillis();            
             for (DependencyInstance instance : instances){
-                DependencyInstanceFeatureVectors instancefv = dictionary.featureVectors(instance);
+                
+                //optimization for feature vectors creation
+                DependencyInstanceFeatureVectors instancefv = fvs.get(t-1);
+
                 parameter.update(constraint, lossFunction, chooser, instancefv, instance.getDep());
                 v = v.add(parameter.getWeightVector());
                 
@@ -126,6 +149,17 @@ public class UnlabeledParser extends CLEMIRAParser{
         
         RealVector w = v.mapDivide(numIter*T);
         parameter.setWeightVector(w);
+    }
+    public static int sizeof(Object obj) throws IOException {
+
+        ByteArrayOutputStream byteOutputStream = new ByteArrayOutputStream();
+        ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteOutputStream);
+
+        objectOutputStream.writeObject(obj);
+        objectOutputStream.flush();
+        objectOutputStream.close();
+
+        return byteOutputStream.toByteArray().length;
     }
     
     @Override

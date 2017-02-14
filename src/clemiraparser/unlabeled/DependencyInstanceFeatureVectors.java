@@ -5,7 +5,9 @@
  */
 package clemiraparser.unlabeled;
 
+import clemiraparser.util.ArraySparseBinaryVector;
 import clemiraparser.util.MySparseVector;
+import java.io.Serializable;
 import org.apache.commons.math3.exception.DimensionMismatchException;
 import org.apache.commons.math3.exception.OutOfRangeException;
 import org.apache.commons.math3.linear.RealVector;
@@ -14,18 +16,18 @@ import org.apache.commons.math3.linear.RealVector;
  *
  * @author nizami
  */
-public class DependencyInstanceFeatureVectors {
-    RealVector [][] edgeFeatureVectors;
+public class DependencyInstanceFeatureVectors implements Serializable{
+    ArraySparseBinaryVector [][] edgeFeatureVectors;
     private final int n;
     final int featureVectorDimension;
     
     public DependencyInstanceFeatureVectors(int n, int featureVectorDimension){
         this.n = n;
-        edgeFeatureVectors = new RealVector[n+1][n+1];
+        edgeFeatureVectors = new ArraySparseBinaryVector[n+1][n+1];
         this.featureVectorDimension = featureVectorDimension;
     }
     
-    public void setEdgeFeatureVector(int i, int j, RealVector edgeFeatureVector){
+    public void setEdgeFeatureVector(int i, int j, ArraySparseBinaryVector edgeFeatureVector){
         if (edgeFeatureVector.getDimension()!=featureVectorDimension)
             throw new DimensionMismatchException(edgeFeatureVector.getDimension(),featureVectorDimension);
         
@@ -35,7 +37,7 @@ public class DependencyInstanceFeatureVectors {
     
     public RealVector getEdgeFeatureVector(int i, int j){
         checkRange(i,j);
-        return edgeFeatureVectors[i][j];
+        return edgeFeatureVectors[i][j].toMySparseVector();
     }
     
     public RealVector getTreeFeatureVector(int [] dep){

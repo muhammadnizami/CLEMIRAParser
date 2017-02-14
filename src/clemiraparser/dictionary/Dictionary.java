@@ -7,6 +7,10 @@ package clemiraparser.dictionary;
 
 import clemiraparser.DependencyFileReader;
 import clemiraparser.DependencyInstance;
+import clemiraparser.util.ArraySparseBinaryVector;
+import clemiraparser.util.ArraySparseBinaryVector.ArraySparseBinaryVectorBuilder;
+import clemiraparser.util.ListSparseVector;
+import clemiraparser.util.ListSparseVector.ListSparseVectorBuilder;
 import clemiraparser.util.MySparseVector;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -68,15 +72,15 @@ public abstract class Dictionary{
     
     protected abstract String[] featureString(DependencyInstance instance);
     
-    RealVector featureVector(String [] featureStrings){
-        RealVector retval = new MySparseVector(getSize());
+    ArraySparseBinaryVector featureVector(String [] featureStrings){
+        ArraySparseBinaryVectorBuilder builder = new ArraySparseBinaryVectorBuilder(getSize());
         for (String s : featureStrings){
             if (featureStringMap.containsKey(s)){
                 int index = featureStringMap.get(s);
-                retval.setEntry(index,1.0d);
+                builder.setEntry(index,1.0d);
             }
         }
-        return retval;
+        return builder.toVector();
     }
 
 }
