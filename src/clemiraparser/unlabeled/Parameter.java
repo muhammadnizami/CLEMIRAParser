@@ -32,7 +32,7 @@ public class Parameter implements java.io.Serializable{
     
     public Parameter(int n){
         this.n = n;
-        weightVector = new MySparseVector(n);
+        weightVector = new ArrayRealVector(n);
     }
     
     public RealVector getWeightVector(){
@@ -43,19 +43,6 @@ public class Parameter implements java.io.Serializable{
         if (rv.getDimension()!=n)
             throw new DimensionMismatchException(n,rv.getDimension());
         weightVector = rv;
-    }
-    
-    public RealVector nextWeightVector(ConstraintType constraintType, LossFunction lossFunction, Chooser chooser, DependencyInstanceFeatureVectors instance, int [] dep){
-        List<int[]> chosenPreds = chooser.choosePredictions(instance, dep, this);
-        
-        RealVector [] A = constraintType.getA(lossFunction, instance, dep, chosenPreds);
-        double [] b = constraintType.getb(lossFunction, dep, chosenPreds);
-        
-        HildrethSolver hildrethSolver = new HildrethSolver2();
-        RealVector nextWeightVector = hildrethSolver.solve(weightVector, A, b);
-        
-        return nextWeightVector;
-        
     }
     
     public void update(ConstraintType constraintType, LossFunction lossFunction, Chooser chooser, List<DependencyInstanceFeatureVectors> instances, List<int[]> deps, int N){
@@ -89,7 +76,13 @@ public class Parameter implements java.io.Serializable{
     }
     
     public void update(ConstraintType constraintType, LossFunction lossFunction, Chooser chooser, DependencyInstanceFeatureVectors instance, int [] dep){
-        setWeightVector(nextWeightVector(constraintType, lossFunction, chooser, instance, dep));
+        List<int[]> chosenPreds = chooser.choosePredictions(instance, dep, this);
+        
+        RealVector [] A = constraintType.getA(lossFunction, instance, dep, chosenPreds);
+        double [] b = constraintType.getb(lossFunction, dep, chosenPreds);
+        
+        HildrethSolver hildrethSolver = new HildrethSolver2();
+        hildrethSolver.solveAddToX_0(weightVector, A, b);
     }
     
     public double getScore(RealVector featureVector){
@@ -118,7 +111,9 @@ public class Parameter implements java.io.Serializable{
      * changes the vector to ArrayRealVector which is faster for serialization
      */
     public void optimizeForSerialization(){
-        double [] w = weightVector.toArray();
-        setWeightVector(new ArrayRealVector(w));
+        if (!ArrayRealVector.class.isInstance(weightVector)){
+            double [] w = weightVector.toArray();
+            setWeightVector(new ArrayRealVector(w));
+        }
     }
 }

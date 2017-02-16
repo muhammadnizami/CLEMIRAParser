@@ -112,6 +112,7 @@ public class UnlabeledParser extends CLEMIRAParser{
         //optimization for feature vectors creation
         List<DependencyInstanceFeatureVectors> fvs = new ArrayList<>(instances.size());
         int count = 0;
+        System.out.print("creating feature Vectors");
         for (DependencyInstance instance : instances){
             System.out.print(" " + count);count++;
             DependencyInstanceFeatureVectors featureVector = dictionary.featureVectors(instance);

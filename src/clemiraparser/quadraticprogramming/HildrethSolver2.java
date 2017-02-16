@@ -17,15 +17,8 @@ import org.apache.commons.math3.linear.RealVector;
  */
 public class HildrethSolver2 extends HildrethSolver {
     
-    
-    /**
-     * @param x_0
-     * @param A
-     * @param b
-     * @return x* described in Jamil(2014)
-     * */
     @Override
-    public RealVector solve(RealVector x_0, RealVector[] A, double[] b){
+    public RealVector solveDelta(RealVector x_0, RealVector[] A, double[] b){
         
         if (A.length != b.length)
             throw new DimensionMismatchException(A.length,b.length);
@@ -62,9 +55,20 @@ public class HildrethSolver2 extends HildrethSolver {
         //calculating x
         RealVector delta_x = new MySparseVector(x_0.getDimension());
         for (int i=0;i<A.length;i++){
-            delta_x = delta_x.add(A[i].mapMultiply(d.getEntry(i)));
+            delta_x = A[i].mapMultiply(d.getEntry(i)).add(delta_x);
         }
+        return delta_x;
+    }
+    /**
+     * @param x_0
+     * @param A
+     * @param b
+     * @return x* described in Jamil(2014)
+     * */
+    @Override
+    public RealVector solve(RealVector x_0, RealVector[] A, double[] b){
         
+        RealVector delta_x = solveDelta(x_0,A,b);
         return delta_x.add(x_0);
     }
 }

@@ -28,7 +28,7 @@ public class ArraySparseBinaryVector extends RealVector implements Serializable{
 
     @Override
     public double getEntry(int i) throws OutOfRangeException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return java.util.Arrays.binarySearch(elArray, i)>=0?1:0;
     }
 
     @Override
@@ -151,6 +151,14 @@ public class ArraySparseBinaryVector extends RealVector implements Serializable{
         return toMySparseVector().subtract(rv);
     }
     
+    public RealVector subtractFrom(RealVector rv){
+        RealVector ret = rv.copy();
+        for (int i : elArray){
+            ret.addToEntry(i, -1);
+        }
+        return ret;
+    }
+    
     public ListSparseVector toListSparseVector(){
         ListSparseVector lsv = new ListSparseVector(getDimension());
         for (int i : elArray){
@@ -169,12 +177,20 @@ public class ArraySparseBinaryVector extends RealVector implements Serializable{
     
     @Override
     public RealVector add(RealVector rv){
-        return toMySparseVector().add(rv);
+        RealVector ret = rv.copy();
+        for (int i : elArray){
+            ret.addToEntry(i, 1);
+        }
+        return ret;
     }
     
     @Override
     public double dotProduct(RealVector rv){
-        return toMySparseVector().dotProduct(rv);
+        double ret = 0;
+        for (int i : elArray){
+            ret+=rv.getEntry(i);
+        }
+        return ret;
     }
 
     public ArraySparseBinaryVector copy() {
@@ -191,6 +207,7 @@ public class ArraySparseBinaryVector extends RealVector implements Serializable{
         return toMySparseVector().toString();
     }
     
+    @Override
     public double[] toArray(){
         return toMySparseVector().toArray();
     }

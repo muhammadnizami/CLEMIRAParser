@@ -53,21 +53,33 @@ public class MySparseVector extends RealVector implements java.io.Serializable{
     
     @Override
     public RealVector subtract(RealVector rv){
+        if (ArraySparseBinaryVector.class.isInstance(rv))
+            return ((ArraySparseBinaryVector)rv).subtractFrom(this);
         RealVector nrv = rv.mapMultiply(-1);
         return add(nrv);
     }
     
     @Override
     public RealVector add(RealVector rv){
+        if (ArraySparseBinaryVector.class.isInstance(rv))
+            return rv.add(this);
         RealVector retval = rv.copy();
         for (Map.Entry<Integer,Double> e : elMap.entrySet()){
             retval.addToEntry(e.getKey(), e.getValue());
         }
         return retval;
     }
+    
+    public void addTo(RealVector rv){
+        for (Map.Entry<Integer,Double> e : elMap.entrySet()){
+            rv.addToEntry(e.getKey(), e.getValue());
+        }
+    }
 
     @Override
     public double dotProduct(RealVector rv){
+        if (ArraySparseBinaryVector.class.isInstance(rv))
+            return rv.dotProduct(this);
         double result = 0;
         for (Map.Entry<Integer,Double> e : elMap.entrySet()){
             result+=e.getValue()*rv.getEntry(e.getKey());

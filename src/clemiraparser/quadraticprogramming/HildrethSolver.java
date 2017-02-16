@@ -38,10 +38,9 @@ public class HildrethSolver {
      * @param x_0
      * @param A
      * @param b
-     * @return x* described in Jamil(2014)
-     * */
-    public RealVector solve(RealVector x_0, RealVector[] A, double[] b){
-        
+     * @return x*-x_0
+     */
+    public RealVector solveDelta(RealVector x_0, RealVector[] A, double[] b){
         if (A.length != b.length)
             throw new DimensionMismatchException(A.length,b.length);
         
@@ -77,8 +76,36 @@ public class HildrethSolver {
         //    System.out.println("iter x: " + x.toString());
             
         }
+        return delta_x;
+    }
+    
+    /**
+     * @param x_0
+     * @param A
+     * @param b
+     * @return x* described in Jamil(2014)
+     * */
+    public RealVector solve(RealVector x_0, RealVector[] A, double[] b){
+        
+        RealVector delta_x = solveDelta(x_0,A,b);
         
         return delta_x.add(x_0);
+    }
+    
+    /**
+     * the optimized version of solve, where the x is not copied. The solution is
+     * added to it instead.
+     * @param x_0
+     * @param A
+     * @param b 
+     */
+    public void solveAddToX_0(RealVector x_0, RealVector[] A, double[] b){
+        RealVector delta_x = solveDelta(x_0,A,b);
+        if (MySparseVector.class.isInstance(delta_x)){
+            ((MySparseVector)delta_x).addTo(x_0);
+        }else{
+            x_0.combineToSelf(1,1, delta_x);
+        }
     }
     double min(double a, double b){
         return a<b?a:b;

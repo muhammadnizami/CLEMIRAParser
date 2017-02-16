@@ -37,7 +37,7 @@ public class DependencyInstanceFeatureVectors implements Serializable{
     
     public RealVector getEdgeFeatureVector(int i, int j){
         checkRange(i,j);
-        return edgeFeatureVectors[i][j].toMySparseVector();
+        return edgeFeatureVectors[i][j];//.toMySparseVector();
     }
     
     public RealVector getTreeFeatureVector(int [] dep){
