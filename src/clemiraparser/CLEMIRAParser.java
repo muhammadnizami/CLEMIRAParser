@@ -123,7 +123,7 @@ public abstract class CLEMIRAParser implements java.io.Serializable{
         System.out.println("unlabeled attachment corrects: " + unlabeledAttachmentCorrects);
         System.out.println("unlabeled attachment incorrects: " + unlabeledAttachmentIncorrects);
         System.out.println("labeled attachment corrects: " + labeledAttachmentCorrects);
-        System.out.println("labeled attachment incorrects: " + labeledAttachmentCorrects);
+        System.out.println("labeled attachment incorrects: " + labeledAttachmentIncorrects);
         System.out.println("UAS: " + UAS);
         System.out.println("LAS: " + LAS);
         System.out.println("unlabeled complete correct: " + unlabeledCompleteCorrect);
