@@ -27,7 +27,7 @@ public class Parameter implements Serializable{
     
     public Parameter(int n){
         this.n = n;
-        weightVector = new MySparseVector(n);
+        weightVector = new ArrayRealVector(n);
     }
     
     public RealVector getWeightVector(){
