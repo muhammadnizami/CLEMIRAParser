@@ -5,6 +5,7 @@
  */
 package clemiraparser;
 
+import clemiraparser.labeling.DependencyLabeler;
 import clemiraparser.unlabeled.UnlabeledParser;
 import java.util.List;
 
@@ -15,18 +16,23 @@ import java.util.List;
 public class TwoStageParser extends CLEMIRAParser{
     
     UnlabeledParser unlabeledParser;
+    DependencyLabeler dependencyLabeler;
 
     @Override
     public void train(List<DependencyInstance> instances) throws Exception {
         System.out.println("===unlabeled parser===");
         unlabeledParser = new UnlabeledParser();
         unlabeledParser.train(instances);
+        System.out.println("===dependency labeler===");
+        dependencyLabeler = new DependencyLabeler();
+        dependencyLabeler.train(instances);
     }
 
     @Override
     public DependencyInstance parse(DependencyInstance instance) {
         DependencyInstance unlabeledDep = unlabeledParser.parse(instance);
-        return unlabeledDep;
+        DependencyInstance labeledDep = dependencyLabeler.parse(unlabeledDep);
+        return labeledDep;
     }
 
     @Override
