@@ -3,13 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package clemiraparser.labeling;
+package clemiraparser.labeling.markov1o;
 
 import clemiraparser.quadraticprogramming.HildrethSolver;
 import clemiraparser.quadraticprogramming.HildrethSolver2;
-import clemiraparser.labeling.miraoptimizationproblem.Chooser;
-import clemiraparser.labeling.miraoptimizationproblem.ConstraintType;
-import clemiraparser.labeling.miraoptimizationproblem.LossFunction;
+import clemiraparser.labeling.markov1o.miraoptimizationproblem.Chooser;
+import clemiraparser.labeling.markov1o.miraoptimizationproblem.ConstraintType;
+import clemiraparser.labeling.markov1o.miraoptimizationproblem.LossFunction;
 import clemiraparser.util.MySparseVector;
 import clemiraparser.util.ViterbiProblem;
 import java.io.Serializable;

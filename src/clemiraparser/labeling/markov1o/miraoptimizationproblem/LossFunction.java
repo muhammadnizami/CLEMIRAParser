@@ -3,14 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package clemiraparser.labeling;
+package clemiraparser.labeling.markov1o.miraoptimizationproblem;
 
-import clemiraparser.CLEMIRAParser;
+import clemiraparser.unlabeled.miraoptimizationproblem.*;
 
 /**
  *
  * @author nizami
  */
-public abstract class DependencyLabeler extends CLEMIRAParser {
-    
+public interface LossFunction {
+    public double loss(int[] data, int[] pred);
 }

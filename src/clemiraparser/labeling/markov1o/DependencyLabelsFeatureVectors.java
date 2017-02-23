@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package clemiraparser.labeling;
+package clemiraparser.labeling.markov1o;
 
 import clemiraparser.util.MySparseVector;
 import java.util.ArrayList;
@@ -16,7 +16,7 @@ import org.apache.commons.math3.linear.RealVector;
  *
  * @author nizami
  */
-public class DependencyLabelsFeatureVectors {
+public class DependencyLabelsFeatureVectors{
     private RealVector[] initialFeatureVectors; //scores of left-most nodes
     private List<RealVector[][]> transitionFeatureVectors;
     private int numNodesPerLayer;

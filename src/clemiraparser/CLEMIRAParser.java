@@ -5,6 +5,8 @@
  */
 package clemiraparser;
 
+import clemiraparser.labeling.markov1o.Markov1ODependencyLabeler;
+import clemiraparser.labeling.simple.SimpleDependencyLabeler;
 import clemiraparser.unlabeled.UnlabeledParser;
 import java.io.File;
 import java.io.FileInputStream;
@@ -33,7 +35,7 @@ public abstract class CLEMIRAParser implements java.io.Serializable{
     public static String lossFunction = "mcdonaldhamming";
     public static String chooser = "kbest";
     public static String constraint = "original";
-    public static String stages = "unlabeled";
+    public static String stages = "two-simple";
     public static int numIters = 10;
     public static String outfile = "out.conllu";
     public static String goldfile = null;
@@ -44,12 +46,16 @@ public abstract class CLEMIRAParser implements java.io.Serializable{
     public static double trainLambda = 2.0d;
     
     public static CLEMIRAParser parser(){
-        if (stages.equals("two")){
+        if (stages.contains("two")){
             return new TwoStageParser();
         }else if (stages.equals("one")){
             return new OneStageParser();
         }else if (stages.equals("unlabeled")){
             return new UnlabeledParser();
+        }else if (stages.equals("labeling-simple")){
+            return new SimpleDependencyLabeler();
+        }else if (stages.equals("labeling-markov1o")){
+            return new Markov1ODependencyLabeler();
         }else{
             throw new IllegalArgumentException("Unknown stage " + stages);
         }

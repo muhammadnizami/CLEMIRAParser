@@ -6,6 +6,8 @@
 package clemiraparser;
 
 import clemiraparser.labeling.DependencyLabeler;
+import clemiraparser.labeling.markov1o.Markov1ODependencyLabeler;
+import clemiraparser.labeling.simple.SimpleDependencyLabeler;
 import clemiraparser.unlabeled.UnlabeledParser;
 import java.util.List;
 
@@ -20,11 +22,16 @@ public class TwoStageParser extends CLEMIRAParser{
 
     @Override
     public void train(List<DependencyInstance> instances) throws Exception {
-        System.out.println("===unlabeled parser===");
         unlabeledParser = new UnlabeledParser();
+        if (stages.contains("simple"))
+            dependencyLabeler = new SimpleDependencyLabeler();
+        else if (stages.contains("markov1o"))
+            dependencyLabeler = new Markov1ODependencyLabeler();
+        else
+            throw new IllegalArgumentException("unknown labeler " + stages.replace("two", "").replace("-", ""));
+        System.out.println("===unlabeled parser===");
         unlabeledParser.train(instances);
         System.out.println("===dependency labeler===");
-        dependencyLabeler = new DependencyLabeler();
         dependencyLabeler.train(instances);
     }
 
