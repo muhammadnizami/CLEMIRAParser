@@ -9,6 +9,8 @@ import clemiraparser.labeling.DependencyLabeler;
 import clemiraparser.labeling.markov1o.Markov1ODependencyLabeler;
 import clemiraparser.labeling.simple.SimpleDependencyLabeler;
 import clemiraparser.unlabeled.UnlabeledParser;
+import edu.cmu.cs.ark.cle.util.Weighted;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -37,9 +39,23 @@ public class TwoStageParser extends CLEMIRAParser{
 
     @Override
     public DependencyInstance parse(DependencyInstance instance) {
-        DependencyInstance unlabeledDep = unlabeledParser.parse(instance);
-        DependencyInstance labeledDep = dependencyLabeler.parse(unlabeledDep);
-        return labeledDep;
+        List<DependencyInstance> unlabeledDeps = unlabeledParser.parse(instance,testK);
+        
+        List<Weighted<DependencyInstance>> labeledDeps = new ArrayList<>(testK);
+        for (DependencyInstance unlabeledInstance : unlabeledDeps){
+            Weighted<DependencyInstance> labeledDep = dependencyLabeler.parseWithScore(unlabeledInstance);
+            labeledDeps.add(labeledDep);
+        }
+        
+        double maxWeight = Double.NEGATIVE_INFINITY;
+        DependencyInstance maxLabeledDep = null;
+        for (Weighted<DependencyInstance> labeledDep : labeledDeps){
+            if (maxWeight < labeledDep.weight){
+                maxWeight = labeledDep.weight;
+                maxLabeledDep = labeledDep.val;
+            }
+        }
+        return maxLabeledDep;
     }
 
     @Override
