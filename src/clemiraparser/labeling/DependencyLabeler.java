@@ -6,11 +6,13 @@
 package clemiraparser.labeling;
 
 import clemiraparser.CLEMIRAParser;
+import clemiraparser.DependencyInstance;
+import edu.cmu.cs.ark.cle.util.Weighted;
 
 /**
  *
  * @author nizami
  */
 public abstract class DependencyLabeler extends CLEMIRAParser {
-    
+    public abstract Weighted<DependencyInstance> parseWithScore(DependencyInstance instance);
 }

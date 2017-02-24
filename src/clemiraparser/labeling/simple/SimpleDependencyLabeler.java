@@ -10,8 +10,10 @@ import clemiraparser.DependencyInstance;
 import clemiraparser.dictionary.SimpleDependencyLabelingDictionary;
 import clemiraparser.labeling.DependencyLabeler;
 import clemiraparser.labeling.simple.miraoptimizationproblem.*;
+import clemiraparser.labeling.simple.util.SequenceSearch;
 import clemiraparser.util.MySparseVector;
 import clemiraparser.util.ViterbiProblem;
+import edu.cmu.cs.ark.cle.util.Weighted;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.math3.linear.RealVector;
@@ -129,15 +131,29 @@ public class SimpleDependencyLabeler extends DependencyLabeler{
         parameter.setWeightVector(w);
     }
     
+    public Weighted<DependencyInstance> parseWithScore(DependencyInstance instance){
+        DependencyLabelsFeatureVectors instancefv = dictionary.featureVectors(instance);
+        double [][] scoreTable = parameter.getScoreTable(instancefv);
+        Weighted<int []> labs = SequenceSearch.getBestSequence(scoreTable);
+        
+        String [] dep_type = new String[instance.getLength()+1];
+        for (int i=1;i<=instance.getLength();i++)
+            dep_type[i]=dictionary.label(labs.val[i]);
+        
+        DependencyInstance retinstance = new DependencyInstance(instance.getLength(),instance.getWord(),instance.getPos(),instance.getDep(),dep_type);
+        return new Weighted<>(retinstance,labs.weight);
+    }
+    
     @Override
     public DependencyInstance parse(DependencyInstance instance){
         DependencyLabelsFeatureVectors instancefv = dictionary.featureVectors(instance);
         double [][] scoreTable = parameter.getScoreTable(instancefv);
-        int [] labs = KBestChooser.getKBestSequences(scoreTable, 1).get(0);
+        int [] labs = SequenceSearch.getBestSequence(scoreTable).val;
         
+        String [] dep_type = new String[instance.getLength()+1];
         for (int i=1;i<=instance.getLength();i++)
-            instance.getDep_type()[i]=dictionary.label(labs[i]);
-        return instance;
+            dep_type[i]=dictionary.label(labs[i]);
+        return new DependencyInstance(instance.getLength(),instance.getWord(),instance.getPos(),instance.getDep(),dep_type);
     }
 
     @Override

@@ -8,6 +8,7 @@ package clemiraparser.labeling.simple.miraoptimizationproblem;
 import clemiraparser.labeling.simple.miraoptimizationproblem.*;
 import clemiraparser.labeling.simple.DependencyLabelsFeatureVectors;
 import clemiraparser.labeling.simple.Parameter;
+import clemiraparser.labeling.simple.util.SequenceSearch;
 import clemiraparser.util.ViterbiProblem;
 import java.util.List;
 
@@ -35,6 +36,6 @@ public class KLossMarkedUpBestChooser implements Chooser{
                 scoreTable[i][j] += lossFunction.loss(dep, lab, i, j);
             }
         }
-        return KBestChooser.getKBestSequences(scoreTable, k);
+        return SequenceSearch.getKBestSequences(scoreTable, k);
     }
 }

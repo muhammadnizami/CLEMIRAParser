@@ -25,6 +25,7 @@ import clemiraparser.unlabeled.miraoptimizationproblem.RootPreferredLossFunction
 import com.google.common.collect.ImmutableMap;
 import edu.cmu.cs.ark.cle.Arborescence;
 import edu.cmu.cs.ark.cle.ChuLiuEdmonds;
+import edu.cmu.cs.ark.cle.KBestArborescences;
 import edu.cmu.cs.ark.cle.graph.DenseWeightedGraph;
 import edu.cmu.cs.ark.cle.util.Weighted;
 import java.io.ByteArrayOutputStream;
@@ -161,6 +162,26 @@ public class UnlabeledParser extends CLEMIRAParser{
         objectOutputStream.close();
 
         return byteOutputStream.toByteArray().length;
+    }
+    
+    public List<DependencyInstance> parse(DependencyInstance instance, int k){
+        DependencyInstanceFeatureVectors instancefv = dictionary.featureVectors(instance);
+                double [][] scoreTable = parameter.getScoreTable(instancefv);
+        DenseWeightedGraph g = DenseWeightedGraph.from(scoreTable);
+        
+        List<Weighted<Arborescence<Integer>>> kBestArborescences = KBestArborescences.getKBestArborescences(g, 0, k);
+        
+        List<DependencyInstance> retval = new ArrayList<>(k);
+        for (Weighted<Arborescence<Integer>> arborescence : kBestArborescences){
+            int [] deppred = new int[instancefv.getN()+1];
+            ImmutableMap<Integer,Integer> parents = arborescence.val.parents;
+            for (int i=1;i<=instancefv.getN();i++){
+                deppred[i]=parents.get(i);
+            }
+            retval.add(new DependencyInstance(instance.getLength(),instance.getWord(),
+            instance.getPos(),deppred));
+        }
+        return retval;
     }
     
     @Override

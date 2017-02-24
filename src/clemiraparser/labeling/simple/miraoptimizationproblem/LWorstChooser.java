@@ -8,6 +8,7 @@ package clemiraparser.labeling.simple.miraoptimizationproblem;
 import clemiraparser.labeling.simple.miraoptimizationproblem.*;
 import clemiraparser.labeling.simple.DependencyLabelsFeatureVectors;
 import clemiraparser.labeling.simple.Parameter;
+import clemiraparser.labeling.simple.util.SequenceSearch;
 import clemiraparser.util.ViterbiProblem;
 import java.util.List;
 
@@ -40,7 +41,7 @@ public class LWorstChooser implements Chooser{
     public List<int[]> choosePredictions(DependencyLabelsFeatureVectors instance, int [] dep, int [] lab, Parameter parameter) {
         double [][] scoreTable = parameter.getScoreTable(instance);
         double [][] negScoreTable = negate(scoreTable);
-        return KBestChooser.getKBestSequences(scoreTable, l);
+        return SequenceSearch.getKBestSequences(scoreTable, l);
     }
     
 }

@@ -241,6 +241,9 @@ public abstract class CLEMIRAParser implements java.io.Serializable{
 	    if(pair[0].equals("training-l")) {
 		trainL = Integer.parseInt(pair[1]);
 	    }
+            if(pair[0].equals("test-k")){
+                testK = Integer.parseInt(pair[1]);
+            }
 	    if(pair[0].equals("loss-function")) {
 		lossFunction = pair[1];
 	    }
@@ -276,6 +279,7 @@ public abstract class CLEMIRAParser implements java.io.Serializable{
 	System.out.println("training-iterations: " + numIters);
 	System.out.println("training-k: " + trainK);
 	System.out.println("training-l: " + trainL);
+        System.out.println("testing-k: " + testK);
         System.out.println("training-alpha: " + trainAlpha);
         System.out.println("training-lambda: " + trainLambda);
         System.out.println("stages: " + stages);

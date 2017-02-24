@@ -18,6 +18,7 @@ import clemiraparser.labeling.markov1o.miraoptimizationproblem.MIRAConstraintTyp
 import clemiraparser.labeling.markov1o.miraoptimizationproblem.McDonaldHammingLoss;
 import clemiraparser.util.MySparseVector;
 import clemiraparser.util.ViterbiProblem;
+import edu.cmu.cs.ark.cle.util.Weighted;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -137,6 +138,33 @@ public class Markov1ODependencyLabeler extends DependencyLabeler{
             }
         }
         return ret;
+    }
+
+    @Override
+    public Weighted<DependencyInstance> parseWithScore(DependencyInstance instance) {
+        DependencyInstance ret = new DependencyInstance(instance.getLength(), instance.getWord(), instance.getPos(), instance.getDep());
+        double score = 0;
+        for (int i=0;i<=instance.getLength();i++){
+            DependencyLabelsFeatureVectors fv = dictionary.featureVectors(instance, i);
+            if (fv!=null){
+                ViterbiProblem viterbiProblem = parameter.getViterbiProblem(fv);
+                int [] viterbi_labs = viterbiProblem.bestPath();
+
+                //applying the labels
+                int k=0;
+                for (int j=1;j<=instance.getLength();j++){
+                    if (instance.getDep()[j]==i){
+                        int lab = viterbi_labs[k];
+                        ret.getDep_type()[j]=dictionary.label(lab);
+                        k++;
+                    }
+                }
+                
+                //summing the scores
+                score += viterbiProblem.score(viterbi_labs);
+            }
+        }
+        return new Weighted<>(ret,score);
     }
     
 }
