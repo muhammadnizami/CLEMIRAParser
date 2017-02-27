@@ -78,6 +78,15 @@ public class UnlabeledParser extends CLEMIRAParser{
             throw new IllegalArgumentException("unknown constraint " + constraint);
         }
     }
+    public static Parameter parameter(int dim){
+        if (scoreFunction.equals("original")){
+            return new Parameter(dim);
+        }else if (scoreFunction.equals("rootrelaxed")){
+            return new RootRelaxedParameter(dim, scoreGamma);
+        }else {
+            throw new IllegalArgumentException("unknown score function " + scoreFunction);
+        }
+    }
     
     UnlabeledDependencyDictionary dictionary;
     Parameter parameter;
@@ -106,7 +115,7 @@ public class UnlabeledParser extends CLEMIRAParser{
             ConstraintType constraint,
             int numIter){
         this.dictionary = dictionary;
-        parameter = new Parameter(dictionary.getSize());
+        parameter = parameter(dictionary.getSize());
         int T = instances.size();
         RealVector v = new MySparseVector(dictionary.getSize());
         

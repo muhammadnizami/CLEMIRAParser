@@ -6,13 +6,14 @@
 package clemiraparser.labeling.simple;
 
 
+import static clemiraparser.CLEMIRAParser.scoreFunction;
+import static clemiraparser.CLEMIRAParser.scoreGamma;
 import clemiraparser.DependencyInstance;
 import clemiraparser.dictionary.SimpleDependencyLabelingDictionary;
 import clemiraparser.labeling.DependencyLabeler;
 import clemiraparser.labeling.simple.miraoptimizationproblem.*;
 import clemiraparser.labeling.simple.util.SequenceSearch;
 import clemiraparser.util.MySparseVector;
-import clemiraparser.util.ViterbiProblem;
 import edu.cmu.cs.ark.cle.util.Weighted;
 import java.util.ArrayList;
 import java.util.List;
@@ -55,6 +56,15 @@ public class SimpleDependencyLabeler extends DependencyLabeler{
             throw new IllegalArgumentException("unknown constraint " + constraint);
         }
     }
+    public static Parameter parameter(int dim){
+        if (scoreFunction.equals("original")){
+            return new Parameter(dim);
+        }else if (scoreFunction.equals("rootrelaxed")){
+            return new RootRelaxedParameter(dim, scoreGamma);
+        }else {
+            throw new IllegalArgumentException("unknown score function " + scoreFunction);
+        }
+    }
     
     SimpleDependencyLabelingDictionary dictionary;
     Parameter parameter;
@@ -83,7 +93,7 @@ public class SimpleDependencyLabeler extends DependencyLabeler{
             ConstraintType constraint,
             int numIter){
         this.dictionary = dictionary;
-        parameter = new Parameter(dictionary.getSize());
+        parameter = parameter(dictionary.getSize());
         int T = instances.size();
         RealVector v = new MySparseVector(dictionary.getSize());
         

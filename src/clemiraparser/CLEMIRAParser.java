@@ -31,6 +31,7 @@ public abstract class CLEMIRAParser implements java.io.Serializable{
     public static boolean train = false;
     public static boolean eval = false;
     public static boolean test = false;
+    public static String scoreFunction = "original";
     public static String modelName = "dep.model";
     public static String lossFunction = "mcdonaldhamming";
     public static String chooser = "kbest";
@@ -44,6 +45,7 @@ public abstract class CLEMIRAParser implements java.io.Serializable{
     public static int testK = 1;
     public static double trainAlpha = 3.0d;
     public static double trainLambda = 2.0d;
+    public static double scoreGamma = 0.95d;
     
     public static CLEMIRAParser parser(){
         if (stages.contains("two")){
@@ -244,6 +246,9 @@ public abstract class CLEMIRAParser implements java.io.Serializable{
             if(pair[0].equals("test-k")){
                 testK = Integer.parseInt(pair[1]);
             }
+            if(pair[0].equals("score-function")){
+                scoreFunction = pair[1];
+            }
 	    if(pair[0].equals("loss-function")) {
 		lossFunction = pair[1];
 	    }
@@ -259,6 +264,9 @@ public abstract class CLEMIRAParser implements java.io.Serializable{
             if(pair[0].equals("training-lambda")){
                 trainLambda = Double.parseDouble(pair[1]);
             }
+            if(pair[0].equals("score-gamma")){
+                scoreGamma = Double.parseDouble(pair[1]);
+            }
             if(pair[0].equals("stages")){
                 stages = pair[1];
             }
@@ -273,6 +281,7 @@ public abstract class CLEMIRAParser implements java.io.Serializable{
 	System.out.println("train: " + train);
 	System.out.println("test: " + test);
 	System.out.println("eval: " + eval);
+        System.out.println("score-function: " + scoreFunction);
 	System.out.println("loss-function: " + lossFunction);
 	System.out.println("chooser: " + chooser);
 	System.out.println("constraint: " + constraint);
@@ -282,6 +291,7 @@ public abstract class CLEMIRAParser implements java.io.Serializable{
         System.out.println("testing-k: " + testK);
         System.out.println("training-alpha: " + trainAlpha);
         System.out.println("training-lambda: " + trainLambda);
+        System.out.println("score-gamma: " + scoreGamma);
         System.out.println("stages: " + stages);
 	System.out.println("------\n");
     }
