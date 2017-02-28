@@ -175,7 +175,7 @@ public class MySparseVector extends RealVector implements java.io.Serializable{
         for (Map.Entry<Integer,Double> e : elMap.entrySet()){
             s+="("+e.getKey()+":"+e.getValue()+"), ";
         }
-        s = s.substring(0,s.length()-2);
+        s = s.substring(0,s.length()>1?s.length()-2:s.length()-1);
         s+="}";
         return s;
     }
