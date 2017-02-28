@@ -3,11 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package clemiraparser.labeling.simple.miraoptimizationproblem;
+package clemiraparser.unlabeled;
 
 /**
  *
  * @author nizami
  */
-public class KBestChooserTest {
+public class UnlabeledParserTest {
+    
 }

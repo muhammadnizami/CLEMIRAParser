@@ -1,3 +1,5 @@
+package clemiraparser.unlabeled;
+
 
 import clemiraparser.DependencyFileReader;
 import clemiraparser.DependencyInstance;
@@ -16,7 +18,7 @@ import org.junit.Test;
  *
  * @author nizami
  */
-public class DictionaryTest {
+public class UnlabeledDependencyDictionaryTest {
     @Test
     public void testCreate() throws FileNotFoundException{
         UnlabeledDependencyDictionary d = new UnlabeledDependencyDictionary();

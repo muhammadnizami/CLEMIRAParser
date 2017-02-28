@@ -5,6 +5,7 @@
  */
 package clemiraparser.labeling.simple.util;
 
+import edu.cmu.cs.ark.cle.util.Weighted;
 import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
@@ -38,6 +39,13 @@ public class SequenceSearchTest {
             sum += scoreTable[i][labs[i]];
         }
         return sum;
+    }
+
+    @Test
+    public void testGetBestSequence() {
+        double[][] scoreTable = new double[][]{{0, 0, 0}, {1, 3, 5}, {6, 4, 5}, {1, 3.5, 3}};
+        Weighted<int[]> labs = SequenceSearch.getBestSequence(scoreTable);
+        Assert.assertArrayEquals(new int[]{-1,2,0,1}, labs.val);
     }
     
 }
