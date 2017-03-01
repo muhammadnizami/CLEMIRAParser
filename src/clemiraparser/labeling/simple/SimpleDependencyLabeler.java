@@ -106,6 +106,7 @@ public class SimpleDependencyLabeler extends DependencyLabeler{
             DependencyLabelsFeatureVectors featureVector = dictionary.featureVectors(instance);
             fvs.add(featureVector);
         }
+        System.out.println("done");
               
         //training iterations
         for (int i=0;i<numIter;i++){

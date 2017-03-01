@@ -164,7 +164,7 @@ public abstract class CLEMIRAParser implements java.io.Serializable{
             ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(modelName));
             out.writeObject(parser);
             out.close();
-            System.out.print("done");
+            System.out.println("done");
         }
         if (test){
             System.out.println("==========\n== TEST ==\n==========");
