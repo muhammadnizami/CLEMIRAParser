@@ -31,9 +31,9 @@ public class KLossMarkedUpBestChooser implements Chooser{
         double [][] scoreTable = parameter.getScoreTable(instance);
         
         //marking up the scores
-        for (int i=0;i<=instance.getN();i++){
-            for (int j=1;j<=instance.getN();j++){
-                scoreTable[i][j] += lossFunction.loss(dep, lab, i, j);
+        for (int j=1;j<=instance.getN();j++){
+            for (int l=0;l<scoreTable[j].length;l++){
+                scoreTable[j][l] += lossFunction.loss(dep, lab, j, l);
             }
         }
         return SequenceSearch.getKBestSequences(scoreTable, k);
