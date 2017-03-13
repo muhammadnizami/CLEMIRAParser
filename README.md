@@ -167,7 +167,7 @@ model-name:model.name
 output-file:out.conllu
 - The result of running the parser on the new data
 
-test-k:K
+parsing-k:K
 - The intermediate unlabeled trees produced (if a two-stage parser)
 
 Note that the parsing stage run will be the same as the trained one.

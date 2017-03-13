@@ -42,7 +42,7 @@ public abstract class CLEMIRAParser implements java.io.Serializable{
     public static String goldfile = null;
     public static int trainK = 1;
     public static int trainL = 1;
-    public static int testK = 1;
+    public static int parseK = 1;
     public static double trainAlpha = 3.0d;
     public static double trainLambda = 2.0d;
     public static double scoreGamma = 0.95d;
@@ -243,8 +243,8 @@ public abstract class CLEMIRAParser implements java.io.Serializable{
 	    if(pair[0].equals("training-l")) {
 		trainL = Integer.parseInt(pair[1]);
 	    }
-            if(pair[0].equals("test-k")){
-                testK = Integer.parseInt(pair[1]);
+            if(pair[0].equals("parsing-k")){
+                parseK = Integer.parseInt(pair[1]);
             }
             if(pair[0].equals("score-function")){
                 scoreFunction = pair[1];
@@ -288,7 +288,7 @@ public abstract class CLEMIRAParser implements java.io.Serializable{
 	System.out.println("training-iterations: " + numIters);
 	System.out.println("training-k: " + trainK);
 	System.out.println("training-l: " + trainL);
-        System.out.println("testing-k: " + testK);
+        System.out.println("parsing-k: " + parseK);
         System.out.println("training-alpha: " + trainAlpha);
         System.out.println("training-lambda: " + trainLambda);
         System.out.println("score-gamma: " + scoreGamma);

@@ -39,9 +39,9 @@ public class TwoStageParser extends CLEMIRAParser{
 
     @Override
     public DependencyInstance parse(DependencyInstance instance) {
-        List<DependencyInstance> unlabeledDeps = unlabeledParser.parse(instance,testK);
+        List<DependencyInstance> unlabeledDeps = unlabeledParser.parse(instance,parseK);
         
-        List<Weighted<DependencyInstance>> labeledDeps = new ArrayList<>(testK);
+        List<Weighted<DependencyInstance>> labeledDeps = new ArrayList<>(parseK);
         for (DependencyInstance unlabeledInstance : unlabeledDeps){
             Weighted<DependencyInstance> labeledDep = dependencyLabeler.parseWithScore(unlabeledInstance);
             labeledDeps.add(labeledDep);
