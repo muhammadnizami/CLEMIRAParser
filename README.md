@@ -183,7 +183,7 @@ the parser against a gold standard.
 Assume you have a gold standard, say test.conllu and the output of the parser
 say out.conllu, then run the following command:
 
-> java -classpath ".:lib/trove.jar" -Xmx4096m mstparser.DependencyParser \
+> java -classpath ".:build/classes:lib/trove-3.0.3.jar:lib/commons-math3-3.2.jar:lib/Thomson/ChuLiuEdmonds-1.0-SNAPSHOT.jar:lib/Thomson/org-netbeans-modules-java-j2seproject-copylibstask.jar" -Xmx4096m clemiraparser.CLEMIRAParser \
   eval gold-file:test.conllu output-file:out.conllu
 
 This will return both labeled and unlabeled accuracy (if the data sets contain
