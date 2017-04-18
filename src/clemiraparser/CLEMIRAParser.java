@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.PrintStream;
@@ -46,6 +47,10 @@ public abstract class CLEMIRAParser implements java.io.Serializable{
     public static double trainAlpha = 3.0d;
     public static double trainLambda = 2.0d;
     public static double scoreGamma = 0.95d;
+    public static String numModelParser = "single-model";
+    public static String simpleSentenceModel = "dep.model";
+    public static String compoundSentenceModel = "dep.model";
+    public static String conjunctionPOS = "CONJ";
     
     public static CLEMIRAParser parser(){
         if (stages.contains("two")){
@@ -60,6 +65,26 @@ public abstract class CLEMIRAParser implements java.io.Serializable{
             return new Markov1ODependencyLabeler();
         }else{
             throw new IllegalArgumentException("Unknown stage " + stages);
+        }
+    }
+    
+    public static CLEMIRAParser loadModel() throws IOException, ClassNotFoundException{
+        if (numModelParser.equals("single-model")){
+            ObjectInputStream in = new ObjectInputStream(new FileInputStream(modelName));
+            CLEMIRAParser parser = (CLEMIRAParser) in.readObject();
+            in.close();
+            return parser;
+        }else if (numModelParser.equals("multi-model")){
+            ObjectInputStream in = new ObjectInputStream(new FileInputStream(simpleSentenceModel));
+            CLEMIRAParser simpleSentenceParser = (CLEMIRAParser) in.readObject();
+            in.close();
+            in = new ObjectInputStream(new FileInputStream(compoundSentenceModel));
+            CLEMIRAParser compoundSentenceParser = (CLEMIRAParser) in.readObject();
+            in.close();
+            return new MultiModelParser(simpleSentenceParser, compoundSentenceParser);
+            
+        }else{
+            throw new IllegalArgumentException("unknown number-of-models " + numModelParser);
         }
     }
         
@@ -175,9 +200,7 @@ public abstract class CLEMIRAParser implements java.io.Serializable{
             System.out.println("done");
             
             System.out.print("loading the model...");
-            ObjectInputStream in = new ObjectInputStream(new FileInputStream(modelName));
-            CLEMIRAParser parser = (CLEMIRAParser) in.readObject();
-            in.close();
+            CLEMIRAParser parser = loadModel();
             System.out.println("done");
             
             System.out.print("parsing...");
@@ -270,6 +293,18 @@ public abstract class CLEMIRAParser implements java.io.Serializable{
             if(pair[0].equals("stages")){
                 stages = pair[1];
             }
+            if(pair[0].equals("number-of-models")){
+                numModelParser=pair[1];
+            }
+            if(pair[0].equals("simple-sentence-model")){
+                simpleSentenceModel=pair[1];
+            }
+            if(pair[0].equals("compound-sentence-model")){
+                compoundSentenceModel=pair[1];
+            }
+            if(pair[0].equals("conjunction-pos")){
+                conjunctionPOS=pair[1];
+            }
 	}
 	
 	System.out.println("------\nFLAGS\n------");
@@ -293,6 +328,11 @@ public abstract class CLEMIRAParser implements java.io.Serializable{
         System.out.println("training-lambda: " + trainLambda);
         System.out.println("score-gamma: " + scoreGamma);
         System.out.println("stages: " + stages);
+        System.out.println("number-of-models: " + numModelParser);
+        System.out.println("simple-sentence-model: " + simpleSentenceModel);
+        System.out.println("compound-sentence-model: " + compoundSentenceModel);
+        System.out.println("conjunction-pos: " + conjunctionPOS);
+
 	System.out.println("------\n");
     }
 }
