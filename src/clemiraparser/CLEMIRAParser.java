@@ -245,9 +245,7 @@ public abstract class CLEMIRAParser implements java.io.Serializable{
             System.out.println("============\n== STREAM ==\n============");
             
             System.out.print("loading the model...");
-            ObjectInputStream in = new ObjectInputStream(new FileInputStream(modelName));
-            CLEMIRAParser parser = (CLEMIRAParser) in.readObject();
-            in.close();
+            CLEMIRAParser parser = loadModel();
             System.out.println("done");
             
             System.out.println("streaming...");
