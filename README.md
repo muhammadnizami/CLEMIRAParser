@@ -162,8 +162,11 @@ test
 test-file:file.conllu
 - The file containing the data to run the parser on
 
+number-of-models:single-model|multi-model
+- If single-model is selected, the parser will load a model specified by model-name parameter. If multi-model is selected, the parser will load models specified by simple-sentence-model and compound-sentence-model. In multi-model mode, model specified by simple-sentence-model parameter will be used to parse simple sentences, and model specified by compound-sentence-model parameter will be used to parse compound sentences. Whether a sentence is compound or not is determined by the existence of a token with POS tag equal to the POS tag supplied by conjunction-pos parameter.
+
 model-name:model.name
-- The name of the stored model to be used
+- The name of the stored model to be used, if single-model is selected
 
 output-file:out.conllu
 - The result of running the parser on the new data
@@ -171,7 +174,18 @@ output-file:out.conllu
 parsing-k:K
 - The intermediate unlabeled trees produced (if a two-stage parser)
 
-Note that the parsing stage run will be the same as the trained one.
+simple-sentence-model:model.name
+- The name of the stored model to be used on simple sentences
+
+compound-sentence-model:model.name
+- The name of the stored model to be used on compound compound sentences
+
+conjunction-pos:CONJ
+- The pos tag for which existence inside a sentence indicates the sentence as a compound sentence. default: CONJ.
+
+
+
+Note that the parsing stage run will be the same as the trained one. If the trained one is a two-stage parser, it the parsing will be two-stage parsing, and vice versa.
 
 
 ------------------------
