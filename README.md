@@ -25,6 +25,7 @@ Contents
    b. Training a parser
    c. Running a trained model on new data
    d. Evaluating output
+   e. Streaming
 
 ----------------
 1. Compiling
@@ -189,3 +190,28 @@ say out.conllu, then run the following command:
 This will return both labeled and unlabeled accuracy (if the data sets contain
 labeled trees) as well as complete sentence accuracy, again labeled and
 unlabeled.
+
+
+------------------------
+3e. Streaming
+------------------------
+
+This section describes a method for parsing through standard input and output.
+Assume you have a trained model, say dep.model, you can run the trained model on 
+standard input by running the following command:
+
+> java -classpath ".:build/classes:lib/trove-3.0.3.j
+ar:lib/commons-math3-3.2.jar:lib/Thomson/ChuLiuEdmonds-1.0-SNAPSHOT.jar:lib/Thomson/org-netbeans-modules-java-j2seproject-copylibstask.jar" -Xmx4096m clemiraparser.CLEMIRAParser\
+  stream model-name:dep.model
+
+It should be noted that the parser assumes both words and POS tags in the input. 
+
+The parser also assumes that the edge label and parent index entries are
+in the input. However, these can just be artificially inserted (e.g. with entries
+of "LAB" and "0") since the parser will produce these lines
+as output.
+
+The parsing result starts after the line "streaming..." in stdout.
+
+Other properties can be defined with the flags described in section 3c, except 
+the test-file and output-file tags.

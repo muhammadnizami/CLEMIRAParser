@@ -12,11 +12,13 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 import org.apache.commons.math3.exception.DimensionMismatchException;
 
 /**
@@ -31,6 +33,7 @@ public abstract class CLEMIRAParser implements java.io.Serializable{
     public static boolean train = false;
     public static boolean eval = false;
     public static boolean test = false;
+    public static boolean stream = false;
     public static String scoreFunction = "original";
     public static String modelName = "dep.model";
     public static String lossFunction = "mcdonaldhamming";
@@ -137,6 +140,16 @@ public abstract class CLEMIRAParser implements java.io.Serializable{
         System.out.println("unlabeled complete correct: " + unlabeledCompleteCorrect);
         System.out.println("labeled complete correct: " + labeledCompleteCorrect);
     }
+    public void stream(InputStream in, PrintStream out){
+        Scanner insc = new Scanner(in);
+        DependencyFileReader reader = new DependencyFileReader(insc);
+        
+        while (reader.hasNextInstance()){
+            DependencyInstance instance = reader.nextInstance();
+            DependencyInstance parsedInstance = parse(instance);
+            out.println(parsedInstance);
+        }
+    }
     abstract public DependencyInstance parse(DependencyInstance instance);
 
     /**
@@ -205,6 +218,21 @@ public abstract class CLEMIRAParser implements java.io.Serializable{
             System.out.println("Evaluating");
             eval(out,gold);
         }
+        if (stream){
+            System.out.println("============\n== STREAM ==\n============");
+            
+            System.out.print("loading the model...");
+            ObjectInputStream in = new ObjectInputStream(new FileInputStream(modelName));
+            CLEMIRAParser parser = (CLEMIRAParser) in.readObject();
+            in.close();
+            System.out.println("done");
+            
+            System.out.println("streaming...");
+            parser.stream(System.in, System.out);
+            System.out.println("streaming done");
+
+            
+        }
     }
     
     public static void processArguments(String[] args) {
@@ -219,6 +247,9 @@ public abstract class CLEMIRAParser implements java.io.Serializable{
 	    if(pair[0].equals("test")) {
 		test = true;
 	    }
+            if(pair[0].equals("stream")){
+                stream=true;
+            }
 	    if(pair[0].equals("iters")) {
 		numIters = Integer.parseInt(pair[1]);
 	    }
@@ -281,6 +312,7 @@ public abstract class CLEMIRAParser implements java.io.Serializable{
 	System.out.println("train: " + train);
 	System.out.println("test: " + test);
 	System.out.println("eval: " + eval);
+	System.out.println("stream: " + stream);
         System.out.println("score-function: " + scoreFunction);
 	System.out.println("loss-function: " + lossFunction);
 	System.out.println("chooser: " + chooser);
