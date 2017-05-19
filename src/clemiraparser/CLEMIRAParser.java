@@ -207,25 +207,38 @@ public abstract class CLEMIRAParser implements java.io.Serializable{
         if (test){
             System.out.println("==========\n== TEST ==\n==========");
             
+            
             System.out.print("reading test file...");
+            long start=System.currentTimeMillis();
             DependencyFileReader dependencyFileReader = new DependencyFileReader(new File(testfile));
             List<DependencyInstance> instances = dependencyFileReader.loadAll();
+            long end = System.currentTimeMillis();
             System.out.println("done");
+            System.out.println("took: " + (end-start));
             
             System.out.print("loading the model...");
+            start=System.currentTimeMillis();
             CLEMIRAParser parser = loadModel();
+            end=System.currentTimeMillis();
             System.out.println("done");
+            System.out.println("took: " + (end-start));
             
             System.out.print("parsing...");
+            start=System.currentTimeMillis();
             List<DependencyInstance> out = parser.test(instances);
+            end=System.currentTimeMillis();
             System.out.println("done");
+            System.out.println("took: " + (end-start));
             
             System.out.print("saving the output...");
+            start=System.currentTimeMillis();
             PrintStream outStream = new PrintStream(new File(outfile));
             for (DependencyInstance instance : out){
                 outStream.println(instance);
             }
+            end=System.currentTimeMillis();
             System.out.println("done");
+            System.out.println("took: " + (end-start));
         }
         if (eval){
             System.out.println("==========\n== EVAL ==\n==========");

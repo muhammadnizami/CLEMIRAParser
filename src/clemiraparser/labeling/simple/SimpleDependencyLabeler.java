@@ -101,12 +101,15 @@ public class SimpleDependencyLabeler extends DependencyLabeler{
         List<DependencyLabelsFeatureVectors> fvs = new ArrayList<>(instances.size());
         int count = 0;
         System.out.print("creating feature Vectors");
+        long fvstart = System.currentTimeMillis();
         for (DependencyInstance instance : instances){
             System.out.print(" " + count);count++;
             DependencyLabelsFeatureVectors featureVector = dictionary.featureVectors(instance);
             fvs.add(featureVector);
         }
+        long fvend = System.currentTimeMillis();
         System.out.println("done");
+        System.out.println("creating feature Vectors took: " +(fvend-fvstart));
               
         //training iterations
         for (int i=0;i<numIter;i++){

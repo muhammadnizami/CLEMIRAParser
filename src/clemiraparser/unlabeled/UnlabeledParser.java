@@ -123,12 +123,15 @@ public class UnlabeledParser extends CLEMIRAParser{
         List<DependencyInstanceFeatureVectors> fvs = new ArrayList<>(instances.size());
         int count = 0;
         System.out.print("creating feature Vectors");
+        long fvstart = System.currentTimeMillis();
         for (DependencyInstance instance : instances){
             System.out.print(" " + count);count++;
             DependencyInstanceFeatureVectors featureVector = dictionary.featureVectors(instance);
             fvs.add(featureVector);
         }
+        long fvend = System.currentTimeMillis();
         System.out.println("done");
+        System.out.println("creating feature Vectors took: " +(fvend-fvstart));
               
         //training iterations
         for (int i=0;i<numIter;i++){
