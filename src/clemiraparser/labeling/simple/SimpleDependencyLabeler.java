@@ -25,6 +25,8 @@ import org.apache.commons.math3.linear.RealVector;
  */
 public class SimpleDependencyLabeler extends DependencyLabeler{
     
+    public static final long serialVersionUID = -1872776284700573152L;
+    
     public static LossFunction lossFunction(){
         if (lossFunction.equals("mcdonaldhamming")){
             return new McDonaldHammingLoss();

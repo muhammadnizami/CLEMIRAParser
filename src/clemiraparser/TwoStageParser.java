@@ -19,6 +19,8 @@ import java.util.List;
  */
 public class TwoStageParser extends CLEMIRAParser{
     
+    public static final long serialVersionUID = 6408865468514452915L;
+    
     UnlabeledParser unlabeledParser;
     DependencyLabeler dependencyLabeler;
 

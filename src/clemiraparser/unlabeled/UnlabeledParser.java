@@ -46,6 +46,7 @@ import org.apache.commons.math3.linear.RealVector;
  * @author nizami
  */
 public class UnlabeledParser extends CLEMIRAParser{
+    public static final long serialVersionUID = -1095251421236354213L;
     
     public static LossFunction lossFunction(){
         if (lossFunction.equals("mcdonaldhamming")){
