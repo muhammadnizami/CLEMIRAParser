@@ -34,6 +34,7 @@ public abstract class CLEMIRAParser implements java.io.Serializable{
     public static boolean train = false;
     public static boolean eval = false;
     public static boolean test = false;
+    public static boolean scores = false;
     public static boolean stream = false;
     public static String scoreFunction = "original";
     public static String modelName = "dep.model";
@@ -43,6 +44,7 @@ public abstract class CLEMIRAParser implements java.io.Serializable{
     public static String stages = "two-simple";
     public static int numIters = 10;
     public static String outfile = "out.conllu";
+    public static String scoresfile = "out.scores";
     public static String goldfile = null;
     public static int trainK = 1;
     public static int trainL = 1;
@@ -176,7 +178,21 @@ public abstract class CLEMIRAParser implements java.io.Serializable{
         }
     }
     abstract public DependencyInstance parse(DependencyInstance instance);
+    abstract public DependencyInstanceScores giveScores(DependencyInstance instance);
 
+    public List<DependencyInstanceScores> giveScores(List<DependencyInstance> instances){
+        List<DependencyInstanceScores> scores = new ArrayList<>(instances.size());
+        int count = 0;
+        for (DependencyInstance instance : instances){
+            DependencyInstanceScores score = giveScores(instance);
+            scores.add(score);
+            count++;
+            System.out.print(" " + count);
+        }
+        System.out.println();
+        return scores;
+    }
+    
     /**
      * @param args the command line arguments
      */
@@ -267,6 +283,42 @@ public abstract class CLEMIRAParser implements java.io.Serializable{
 
             
         }
+        if (scores){
+            System.out.println("==========\n== TEST ==\n==========");
+            
+            
+            System.out.print("reading test file...");
+            long start=System.currentTimeMillis();
+            DependencyFileReader dependencyFileReader = new DependencyFileReader(new File(testfile));
+            List<DependencyInstance> instances = dependencyFileReader.loadAll();
+            long end = System.currentTimeMillis();
+            System.out.println("done");
+            System.out.println("took: " + (end-start));
+            
+            System.out.print("loading the model...");
+            start=System.currentTimeMillis();
+            CLEMIRAParser parser = loadModel();
+            end=System.currentTimeMillis();
+            System.out.println("done");
+            System.out.println("took: " + (end-start));
+            
+            System.out.print("parsing...");
+            start=System.currentTimeMillis();
+            List<DependencyInstanceScores> out = parser.giveScores(instances);
+            end=System.currentTimeMillis();
+            System.out.println("done");
+            System.out.println("took: " + (end-start));
+            
+            System.out.print("saving the output...");
+            start=System.currentTimeMillis();
+            PrintStream outStream = new PrintStream(new File(scoresfile));
+            for (DependencyInstanceScores instance : out){
+                outStream.println(instance);
+            }
+            end=System.currentTimeMillis();
+            System.out.println("done");
+            System.out.println("took: " + (end-start));
+        }
     }
     
     public static void processArguments(String[] args) {
@@ -281,6 +333,9 @@ public abstract class CLEMIRAParser implements java.io.Serializable{
 	    if(pair[0].equals("test")) {
 		test = true;
 	    }
+	    if(pair[0].equals("scores")) {
+		scores = true;
+	    }
             if(pair[0].equals("stream")){
                 stream=true;
             }
@@ -289,6 +344,9 @@ public abstract class CLEMIRAParser implements java.io.Serializable{
 	    }
 	    if(pair[0].equals("output-file")) {
 		outfile = pair[1];
+	    }
+	    if(pair[0].equals("scores-file")) {
+		scoresfile = pair[1];
 	    }
 	    if(pair[0].equals("gold-file")) {
 		goldfile = pair[1];
@@ -354,9 +412,11 @@ public abstract class CLEMIRAParser implements java.io.Serializable{
 	System.out.println("test-file: " + testfile);
 	System.out.println("gold-file: " + goldfile);
 	System.out.println("output-file: " + outfile);
+	System.out.println("scores-file: " + scoresfile);
 	System.out.println("model-name: " + modelName);
 	System.out.println("train: " + train);
 	System.out.println("test: " + test);
+	System.out.println("scores: " + scores);
 	System.out.println("eval: " + eval);
 	System.out.println("stream: " + stream);
         System.out.println("score-function: " + scoreFunction);

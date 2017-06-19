@@ -7,6 +7,7 @@ package clemiraparser.unlabeled;
 
 import clemiraparser.CLEMIRAParser;
 import clemiraparser.DependencyInstance;
+import clemiraparser.DependencyInstanceScores;
 import clemiraparser.dictionary.MSTParserUnlabeledDependencyDictionary;
 import clemiraparser.util.MySparseVector;
 import clemiraparser.unlabeled.miraoptimizationproblem.ConstraintType;
@@ -218,5 +219,21 @@ public class UnlabeledParser extends CLEMIRAParser{
     @Override
     public void optimizeForSerialization() {
         parameter.optimizeForSerialization();
+    }
+
+    @Override
+    public DependencyInstanceScores giveScores(DependencyInstance instance) {
+        DependencyInstanceFeatureVectors instancefv = dictionary.featureVectors(instance);
+        double[][] scoreTable = parameter.getScoreTable(instancefv);
+        
+        double[] scores = new double[instance.getLength()+1];
+        for (int i=1;i<=instance.getLength();i++){
+            scores[i] = scoreTable[instance.getDep()[i]][i];
+        }
+        
+        DependencyInstanceScores instanceScores = new DependencyInstanceScores(instance);
+        instanceScores.setDep_score(scores);
+        
+        return instanceScores;
     }
 }

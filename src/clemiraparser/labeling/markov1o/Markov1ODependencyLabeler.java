@@ -8,6 +8,7 @@ package clemiraparser.labeling.markov1o;
 
 import clemiraparser.CLEMIRAParser;
 import clemiraparser.DependencyInstance;
+import clemiraparser.DependencyInstanceScores;
 import clemiraparser.dictionary.Markov1ODependencyLabelingDictionary;
 import clemiraparser.labeling.DependencyLabeler;
 import clemiraparser.labeling.markov1o.miraoptimizationproblem.Chooser;
@@ -165,6 +166,11 @@ public class Markov1ODependencyLabeler extends DependencyLabeler{
             }
         }
         return new Weighted<>(ret,score);
+    }
+
+    @Override
+    public DependencyInstanceScores giveScores(DependencyInstance instance) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
 }

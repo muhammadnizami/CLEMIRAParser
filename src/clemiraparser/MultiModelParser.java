@@ -48,5 +48,14 @@ public class MultiModelParser extends CLEMIRAParser{
             return simpleSentenceParser.parse(instance);
         }
     }
+
+    @Override
+    public DependencyInstanceScores giveScores(DependencyInstance instance) {
+        if (isCompoundSentence(instance)){
+            return compoundSentenceParser.giveScores(instance);
+        }else{
+            return simpleSentenceParser.giveScores(instance);
+        }
+    }
     
 }

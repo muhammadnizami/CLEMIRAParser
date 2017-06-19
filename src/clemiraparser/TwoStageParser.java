@@ -64,5 +64,15 @@ public class TwoStageParser extends CLEMIRAParser{
     public void optimizeForSerialization() {
         unlabeledParser.optimizeForSerialization();
     }
+
+    @Override
+    public DependencyInstanceScores giveScores(DependencyInstance instance) {
+        DependencyInstanceScores depScores = unlabeledParser.giveScores(instance);
+        DependencyInstanceScores labelScores = dependencyLabeler.giveScores(instance);
+        DependencyInstanceScores allScores = new DependencyInstanceScores(instance.getLength(),instance.getWord(),instance.getPos(),instance.getDep(),instance.getDep_type());
+        allScores.setDep_score(depScores.getDep_score());
+        allScores.setDep_type_score(labelScores.getDep_type_score());
+        return allScores;
+    }
     
 }

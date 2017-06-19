@@ -9,6 +9,7 @@ package clemiraparser.labeling.simple;
 import static clemiraparser.CLEMIRAParser.scoreFunction;
 import static clemiraparser.CLEMIRAParser.scoreGamma;
 import clemiraparser.DependencyInstance;
+import clemiraparser.DependencyInstanceScores;
 import clemiraparser.dictionary.SimpleDependencyLabelingDictionary;
 import clemiraparser.labeling.DependencyLabeler;
 import clemiraparser.labeling.simple.miraoptimizationproblem.*;
@@ -175,5 +176,21 @@ public class SimpleDependencyLabeler extends DependencyLabeler{
     @Override
     public void optimizeForSerialization() {
         parameter.optimizeForSerialization();
+    }
+
+    @Override
+    public DependencyInstanceScores giveScores(DependencyInstance instance) {
+        double [] scores = new double[instance.getLength()+1];
+        DependencyLabelsFeatureVectors instancefv = dictionary.featureVectors(instance);
+        double [][] scoreTable = parameter.getScoreTable(instancefv);
+        
+        for (int i=1;i<=instance.getLength();i++){
+            int labIndex = dictionary.labelNum(instance.getDep_type()[i]);
+            scores[i]=scoreTable[i][labIndex];
+        }
+        
+        DependencyInstanceScores ret = new DependencyInstanceScores(instance);
+        ret.setDep_type_score(scores);
+        return ret;
     }
 }

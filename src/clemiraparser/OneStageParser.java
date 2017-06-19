@@ -27,5 +27,10 @@ public class OneStageParser extends CLEMIRAParser {
     public void optimizeForSerialization() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
+    @Override
+    public DependencyInstanceScores giveScores(DependencyInstance instance) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
     
 }
