@@ -27,6 +27,8 @@ Contents
    d. Evaluating output
    e. Streaming
 
+4. Reproducing the results
+
 ----------------
 1. Compiling
 ----------------
@@ -214,8 +216,7 @@ This section describes a method for parsing through standard input and output.
 Assume you have a trained model, say dep.model, you can run the trained model on 
 standard input by running the following command:
 
-> java -classpath ".:build/classes:lib/trove-3.0.3.j
-ar:lib/commons-math3-3.2.jar:lib/Thomson/ChuLiuEdmonds-1.0-SNAPSHOT.jar:lib/Thomson/org-netbeans-modules-java-j2seproject-copylibstask.jar" -Xmx4096m clemiraparser.CLEMIRAParser\
+> java -classpath ".:build/classes:lib/trove-3.0.3.jar:lib/commons-math3-3.2.jar:lib/Thomson/ChuLiuEdmonds-1.0-SNAPSHOT.jar:lib/Thomson/org-netbeans-modules-java-j2seproject-copylibstask.jar" -Xmx4096m clemiraparser.CLEMIRAParser\
   stream model-name:dep.model
 
 It should be noted that the parser assumes both words and POS tags in the input. 
@@ -229,3 +230,23 @@ The parsing result starts after the line "streaming..." in stdout.
 
 Other properties can be defined with the flags described in section 3c, except 
 the test-file and output-file tags.
+
+
+-------------------------
+4. Reproducing the Results
+-------------------------
+
+To reproduce the results from the bachelor thesis, train the models and use the models according to the configurations described in the thesis.
+
+To train the models which produces the best results, run these commands:
+
+> java -classpath ".:build/classes:lib/trove-3.0.3.jar:lib/commons-math3-3.2.jar:lib/Thomson/ChuLiuEdmonds-1.0-SNAPSHOT.jar:lib/Thomson/org-netbeans-modules-java-j2seproject-copylibstask.jar" -Xmx4096m clemiraparser.CLEMIRAParser train train-file:data/id-ud-train.conllu model-name:models/id-ud-finalrepro-gabunganc.model chooser:klossmarkedupbest loss-function:rootpreferred constraint:modified score-function:original iters:5 training-k:1 training-lambda:1.1 training-alpha:3.0 parsing-k:1
+> java -classpath ".:build/classes:lib/trove-3.0.3.jar:lib/commons-math3-3.2.jar:lib/Thomson/ChuLiuEdmonds-1.0-SNAPSHOT.jar:lib/Thomson/org-netbeans-modules-java-j2seproject-copylibstask.jar" -Xmx4096m clemiraparser.CLEMIRAParser train train-file:data/id-ud-train.conllu model-name:models/id-ud-finalrepro-gabungana.model chooser:klossmarkedupbest loss-function:rootpreferred constraint:modified score-function:rootrelaxed iters:10 training-k:10 training-alpha:3.0 training-lambda:1.5 score-gamma:0.98 parsing-k:1
+
+To run and evaluate the parser against the test data, run this command:
+
+> java -classpath ".:build/classes:lib/trove-3.0.3.jar:lib/commons-math3-3.2.jar:lib/Thomson/ChuLiuEdmonds-1.0-SNAPSHOT.jar:lib/Thomson/org-netbeans-modules-java-j2seproject-copylibstask.jar" -Xmx4096m clemiraparser.CLEMIRAParser test test-file:data/id-ud-test.conllu output-file:data/id-ud-test-finalrepro-simple-a-compound-c-output.conllu eval gold-file:data/id-ud-test.conllu number-of-models:multi-model simple-sentence-model:models/id-ud-finalrepro-gabungana.model compound-sentence-model:models/id-ud-finalrepro-gabunganc.model
+
+To run the parser based on the best configuration described in the thesis in stdio manner, run this command:
+
+> java -classpath ".:build/classes:lib/trove-3.0.3.jar:lib/commons-math3-3.2.jar:lib/Thomson/ChuLiuEdmonds-1.0-SNAPSHOT.jar:lib/Thomson/org-netbeans-modules-java-j2seproject-copylibstask.jar" -Xmx4096m clemiraparser.CLEMIRAParser stream number-of-models:multi-model simple-sentence-model:models/id-ud-finalrepro-gabungana.model compound-sentence-model:models/id-ud-finalrepro-gabunganc.model
