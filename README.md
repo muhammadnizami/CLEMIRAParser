@@ -10,7 +10,9 @@ CLEMIRAParser early development version
 ---------------------------------------
 
 The following package contains a java implementation of the dependency parser
-described in Muhammad Nizami's Bachelor Thesis at Bandung Institute of Technology.
+described in the following works:
+- Nizami, M., and Purwarianti, A. (2017). Pembangunan Pengurai Dependensi untuk Bahasa Indonesia dengan Algoritma Chu-Liu Edmonds dan Algoritma Pembelajaran MIRA. Bachelor Thesis. Institut Teknologi Bandung.
+- Nizami, M., and Purwarianti, A. (2017). Modification of Chu-Liu/Edmonds Algorithm and MIRA Learning Algorithm for Dependency Parser on Indonesian Language. ICAICTA 2017, 40.
 
 ----------
 Contents
@@ -250,3 +252,16 @@ The models used above are trained with these commands:
 
 > java -classpath ".:build/classes:lib/trove-3.0.3.jar:lib/commons-math3-3.2.jar:lib/Thomson/ChuLiuEdmonds-1.0-SNAPSHOT.jar:lib/Thomson/org-netbeans-modules-java-j2seproject-copylibstask.jar" -Xmx4096m clemiraparser.CLEMIRAParser train train-file:data/id-ud-train.conllu model-name:models/id-ud-finalrepro-gabunganc.model chooser:klossmarkedupbest loss-function:rootpreferred constraint:modified score-function:original iters:5 training-k:1 training-lambda:1.1 training-alpha:3.0 parsing-k:1
 > java -classpath ".:build/classes:lib/trove-3.0.3.jar:lib/commons-math3-3.2.jar:lib/Thomson/ChuLiuEdmonds-1.0-SNAPSHOT.jar:lib/Thomson/org-netbeans-modules-java-j2seproject-copylibstask.jar" -Xmx4096m clemiraparser.CLEMIRAParser train train-file:data/id-ud-train.conllu model-name:models/id-ud-finalrepro-gabungana.model chooser:klossmarkedupbest loss-function:rootpreferred constraint:modified score-function:rootrelaxed iters:10 training-k:10 training-alpha:3.0 training-lambda:1.5 score-gamma:0.98 parsing-k:1
+
+To reproduce the best result from the paper, the models are trained with the parameters tuned with the development set.
+To run and evaluate the parser against the test data, run this command:
+> java -classpath ".:build/classes:lib/trove-3.0.3.jar:lib/commons-math3-3.2.jar:lib/Thomson/ChuLiuEdmonds-1.0-SNAPSHOT.jar:lib/Thomson/org-netbeans-modules-java-j2seproject-copylibstask.jar" -Xmx4096m clemiraparser.CLEMIRAParser test test-file:data/id-ud-test.conllu output-file:data/id-ud-test-finalrepropaper-simple-b-compound-c-output.conllu eval gold-file:data/id-ud-test.conllu number-of-models:multi-model simple-sentence-model:models/id-ud-finalrepropaper-gabunganb.model compound-sentence-model:models/id-ud-finalrepropaper-gabunganc.model
+
+The models used above are trained with these commands:
+> java -classpath ".:build/classes:lib/trove-3.0.3.jar:lib/commons-math3-3.2.jar:lib/Thomson/ChuLiuEdmonds-1.0-SNAPSHOT.jar:lib/Thomson/org-netbeans-modules-java-j2seproject-copylibstask.jar" -Xmx4096m clemiraparser.CLEMIRAParser train train-file:data/id-ud-train.conllu model-name:models/id-ud-finalrepropaper-gabunganb.model chooser:klossmarkedupbest loss-function:rootpreferred constraint:original score-function:rootrelaxed iters:10 training-k:1 training-lambda:1.5 score-gamma:0.98 parsing-k:1
+> java -classpath ".:build/classes:lib/trove-3.0.3.jar:lib/commons-math3-3.2.jar:lib/Thomson/ChuLiuEdmonds-1.0-SNAPSHOT.jar:lib/Thomson/org-netbeans-modules-java-j2seproject-copylibstask.jar" -Xmx4096m clemiraparser.CLEMIRAParser train train-file:data/id-ud-train.conllu model-name:models/id-ud-finalrepropaper-gabunganc.model chooser:klossmarkedupbest loss-function:rootpreferred constraint:modified score-function:original iters:5 training-k:1 training-lambda:1.1 training-alpha:3.0 parsing-k:1
+
+To reproduce the results in english data, run these commands:
+> java -classpath ".:build/classes:lib/trove-3.0.3.jar:lib/commons-math3-3.2.jar:lib/Thomson/ChuLiuEdmonds-1.0-SNAPSHOT.jar:lib/Thomson/org-netbeans-modules-java-j2seproject-copylibstask.jar" -Xmx4096m clemiraparser.CLEMIRAParser test test-file:data/en-ud-test.conllu output-file:data/en-ud-test-finalrepro-simple-a-compound-c-output.conllu eval gold-file:data/en-ud-test.conllu number-of-models:multi-model simple-sentence-model:models/en-ud-finalrepro-gabungana.model compound-sentence-model:models/en-ud-finalrepro-gabunganc.model stages:unlabeled
+
+The models used above is trained in similar manner.

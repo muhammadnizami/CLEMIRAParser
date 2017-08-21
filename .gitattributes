@@ -1,2 +1,6 @@
 models/id-ud-finalrepro-gabungana.model filter=lfs diff=lfs merge=lfs -text
 models/id-ud-finalrepro-gabunganc.model filter=lfs diff=lfs merge=lfs -text
+models/id-ud-finalrepropaper-gabunganb.model filter=lfs diff=lfs merge=lfs -text
+models/id-ud-finalrepropaper-gabunganc.model filter=lfs diff=lfs merge=lfs -text
+models/en-ud-finalrepro-gabungana.model filter=lfs diff=lfs merge=lfs -text
+models/en-ud-finalrepro-gabunganc.model filter=lfs diff=lfs merge=lfs -text
