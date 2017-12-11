@@ -20,16 +20,25 @@ Contents
 
 1. Compiling
 
+
 2. Example of usage
 
+
 3. Running the parser
+
    a. Input data format
+   
    b. Training a parser
+   
    c. Running a trained model on new data
+   
    d. Evaluating output
+   
    e. Streaming
+   
 
 4. Reproducing the results
+
 
 ----------------
 1. Compiling
